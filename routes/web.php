@@ -15,3 +15,6 @@ Route::get('/sapa/{nama?}', function ($nama = 'Semua') {
     return "Halo, $nama! Selamat datang di Toko Online.";
 
 });
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
