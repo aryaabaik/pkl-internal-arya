@@ -1,107 +1,153 @@
 <?php
-// app/Http/Requests/ProfileUpdateRequest.php
+// app/Http/Controllers/ProfileController.php
 
-namespace App\Http\Requests;
+namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use App\Http\Requests\ProfileUpdateRequests;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
-class ProfileUpdateRequest extends FormRequest
+
+class ProfilController extends Controller
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Menampilkan form edit profil.
      */
-    public function authorize(): bool
+    public function edit(Request $request): View
     {
-        // Dalam konteks profil, semua user yang login boleh update profilnya sendiri.
-        // Route middleware 'auth' sudah menjamin user login.
-        return true;
+        return view('profile.edit', [
+            // Kirim data user yang sedang login ke view
+            'user' => $request->user(),
+        ]);
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Mengupdate informasi profil user.
      */
-    public function rules(): array
+    public function update(ProfileUpdateRequests $request): RedirectResponse
     {
-        return [
-            // Nama: wajib, string, max 255 karakter
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+        $user = $request->user();
 
-            // Email: wajib, format email valid, unik (kecuali milik user ini)
-            // Kasus Penting: User ingin ganti nama tapi tidak ganti email.
-            // Jika validasi email tetap 'unique:users', maka akan error "Email sudah terdaftar" (karena email dia sendiri).
-            // Solusi: ->ignore($id) memberitahu database untuk melewati pengecekan unique pada baris ID user ini.
-            'email' => [
-                'required',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                // Rule::unique('users')->ignore($this->user()->id)
-                Rule::unique(User::class)->ignore($this->user()->id),
-            ],
+        // 1. Handle Upload Avatar
+        // Cek apakah user mengupload file baru di input 'avatar'?
+        if ($request->hasFile('avatar')) {
+            // Upload file baru dan dapatkan path-nya (e.g., avatars/xxx.jpg)
+            $avatarPath = $this->uploadAvatar($request, $user);
 
-            // Phone: opsional, regex khusus format Indonesia
-            // Menerima: 0812..., 62812..., +62812...
-            'phone' => [
-                'nullable',
-                'string',
-                'max:20',
-                'regex:/^(\+62|62|0)8[1-9][0-9]{6,10}$/',
-            ],
+            // Simpan path ke properti model, tapi belum di-save ke DB (masih di memory)
+            $user->avatar = $avatarPath;
+        }
 
-            // Address: opsional, text max 500 karakter
-            'address' => [
-                'nullable',
-                'string',
-                'max:500',
-            ],
+        // 2. Update Data Text (Nama, Email, dll)
+        // fill() mengisi atribut model dengan data validasi, tapi belum disimpan ke DB.
+        // Ini lebih aman daripada $user->update() langsung karena kita mau cek 'isDirty' dulu.
+        $user->fill($request->validated());
 
-            // Avatar: opsional
-            // Harus file gambar (mime: jpg, png, webp)
-            // Max ukuran 2MB (2048 KB)
-            // Dimensi minimal 100x100px agar tidak pecah/blur
-            'avatar' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,jpg,png,webp',
-                'max:2048',
-                'dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
-            ],
-        ];
+        // 3. Cek Perubahan Email
+        // Jika email berubah, kita harus membatalkan status verifikasi email (isDirty cek perubahan di memory).
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        // 4. Simpan ke Database
+        // Method save() baru benar-benar menjalankan query UPDATE ke database.
+        $user->save();
+
+        return Redirect::route('profile.edit')
+            ->with('success', 'Profil berhasil diperbarui!');
     }
 
     /**
-     * Custom error messages (Bahasa Indonesia).
-     * Laravel menyediakan default message (b.inggris), kita override agar lebih user friendly.
+     * Helper khusus untuk menangani logika upload avatar.
+     * Mengembalikan string path file yang tersimpan.
      */
-    public function messages(): array
+    protected function uploadAvatar( $request, $user): string
     {
-        return [
-            'phone.regex' => 'Format nomor telepon tidak valid. Gunakan format 08xx atau +628xx.',
-            'avatar.max' => 'Ukuran foto maksimal 2MB.',
-            'avatar.dimensions' => 'Dimensi foto harus antara 100x100 hingga 2000x2000 pixel.',
-            'email.unique' => 'Email ini sudah digunakan oleh pengguna lain.',
-        ];
+        // Hapus avatar lama (Garbage Collection)
+        // Cek 1: Apakah user punya avatar sebelumnya?
+        // Cek 2: Apakah file fisiknya benar-benar ada di storage 'public'?
+        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+
+        // Generate nama file unik untuk mencegah bentrok nama.
+        // Format: avatar-{user_id}-{timestamp}.{ext}
+        $filename = 'avatar-' . $user->id . '-' . time() . '.' . $request->file('avatar')->extension();
+
+        // Simpan file ke folder: storage/app/public/avatars
+        // return path relatif: "avatars/namafile.jpg"
+        $path = $request->file('avatar')->storeAs('avatars', $filename, 'public');
+
+        return $path;
     }
 
     /**
-     * Custom attribute names for error messages.
-     * Mengubah ":attribute is required" menjadi "nama wajib diisi".
+     * Menghapus avatar (tombol "Hapus Foto").
      */
-    public function attributes(): array
+    public function deleteAvatar(Request $request): RedirectResponse
     {
-        return [
-            'name' => 'nama',
-            'email' => 'alamat email',
-            'phone' => 'nomor telepon',
-            'address' => 'alamat domisili',
-            'avatar' => 'foto profil',
-        ];
+        $user = $request->user();
+
+        // Hapus file fisik
+        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+            Storage::disk('public')->delete($user->avatar);
+
+            // Set kolom di database jadi NULL
+            $user->update(['avatar' => null]);
+        }
+
+        return back()->with('success', 'Foto profil berhasil dihapus.');
+    }
+
+
+    /**
+     * Update password user.
+     */
+    public function updatePassword(Request $request): RedirectResponse
+    {
+        $validated = $request->validateWithBag('updatePassword', [
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', 'min:8'],
+        ]);
+
+        $request->user()->update([
+            'password' => \Illuminate\Support\Facades\Hash::make($validated['password']),
+        ]);
+
+        return back()->with('status', 'password-updated');
+    }
+
+    /**
+     * Menghapus akun user permanen.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        // Validasi password untuk keamanan sebelum hapus akun
+        $request->validateWithBag('userDeletion', [
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+
+        // Logout dulu
+        Auth::logout();
+
+        // Hapus avatar fisik user sebelum hapus data user
+        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+
+        // Hapus data user dari DB
+        $user->delete();
+
+        // Invalidate session agar tidak bisa dipakai lagi (Security)
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return Redirect::to('/');
     }
 }
