@@ -84,6 +84,14 @@
                     Tambah Keranjang
                 @endif
             </button>
+            @auth
+    <button type="button"
+            class="btn btn-light btn-sm position-absolute top-0 end-0 m-2 rounded-circle shadow-sm wishlist-btn"
+            data-product-id="{{ $product->id }}"
+            style="width: 40px; height: 40px;">
+        <i class="bi {{ auth()->user()->hasInWishlist($product) ? 'bi-heart-fill text-danger' : 'bi-heart' }} fs-5"></i>
+    </button>
+@endauth
         </form>
     </div>
 </div>

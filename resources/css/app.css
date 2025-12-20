@@ -37,6 +37,13 @@
   border-color: #4338ca;
 }
 
+.hero-gradient {
+   background: linear-gradient(to bottom, 
+       #13547a 0%,    /* Biru gelap atas */
+       #80d0c7 40%,   /* Turquoise lembut */
+       #a0e7ff 70%,   /* Biru langit cerah */
+       #ffffff 100%);
+}
 /* ================================================
    LAYOUT STYLES
    ================================================ */
