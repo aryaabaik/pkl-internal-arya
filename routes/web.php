@@ -88,27 +88,32 @@ Route::middleware('auth')->group(function () {
 // HALAMAN ADMIN (Butuh Login + Role Admin)
 // ================================================
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+// Route produk & kategori untuk user biasa (misalnya halaman depan toko)
+Route::resource('products', ProductController::class)->only(['index', 'show']);
+Route::resource('categories', CategoryController::class)->only(['index', 'show']);
+
+// ====================
+// ROUTE KHUSUS ADMIN (harus login + role admin)
+// ====================
+
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
     // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Produk CRUD
+    // Produk CRUD (khusus admin)
     Route::resource('products', AdminProductController::class);
 
-    // Kategori CRUD
-    Route::resource('categories', AdminCategoryController::class);
+    // Kategori CRUD (khusus admin)
+    Route::resource('categories', AdminCategoryController::class)->except(['show']);
 
     // Manajemen Pesanan
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
-
-    //kategori  
-        Route::resource('categories', CategoryController::class)->except(['show']); // Kategori biasanya tidak butuh show detail page
-
-    // Produk
-    Route::resource('products', ProductController::class);
-
 });
 
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');

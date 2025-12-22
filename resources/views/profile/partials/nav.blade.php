@@ -71,7 +71,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center text-decoration-none" href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="{{ auth()->user()->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=6366f1&color=fff' }}"
-                                 class="rounded-circle me-2 border border-3 border-indigo" width="40" height="40" alt="Avatar">
+                                 class="rounded-circle me-2 border-3 border-indigo" width="40" height="40" alt="Avatar">
                             <span class="fw-medium d-none d-lg-inline">{{ auth()->user()->name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end modern-dropdown-solid shadow-xl border-0 py-4 px-2" aria-labelledby="userDropdown">

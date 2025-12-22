@@ -85,7 +85,7 @@
                 @endif
             </button>
             @auth
-    <button type="button"
+    <button type="submit"
             class="btn btn-light btn-sm position-absolute top-0 end-0 m-2 rounded-circle shadow-sm wishlist-btn"
             data-product-id="{{ $product->id }}"
             style="width: 40px; height: 40px;">

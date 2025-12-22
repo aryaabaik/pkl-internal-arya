@@ -25,7 +25,7 @@
                     </a>
                 </div>
                 <div class="col-lg-6 text-center" data-aos="fade-left">
-                    <img src="images/1.PNG"
+                    <img src="images/joko.jpeg"
                          alt="Ilustrasi Belanja Online Minimalist"
                          class="img-fluid rounded-4 "
                          style="max-height: 420px; object-fit: contain;">

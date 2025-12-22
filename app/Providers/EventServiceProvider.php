@@ -21,9 +21,9 @@ class EventServiceProvider extends ServiceProvider
     {
     
         $listen = [
-    Login::class => [
+        Login::class => [
         MergeCartListener::class,
     ],
-];
+        ];
     }
 }
