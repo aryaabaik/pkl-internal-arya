@@ -11,16 +11,17 @@ class WishlistController extends Controller
     /**
      * Menampilkan halaman daftar wishlist user.
      */
-    public function index()
-    {
-        // Ambil produk yang di-wishlist oleh user yang sedang login
-        $products = auth()->user()->wishlists()
-            ->with(['category', 'primaryImage']) // Eager load
-            ->latest('wishlists.created_at') // Urutkan dari yang baru di-wishlist
-            ->paginate(12);
+   public function index()
+{
+    $products = auth()->user()
+        ->wishlistProducts()
+        ->with(['category', 'primaryImage'])
+        ->orderByPivot('created_at', 'desc')
+        ->paginate(12);
 
-        return view('wishlist.index', compact('products'));
-    }
+    return view('wishlist.index', compact('products'));
+}
+
 
     /**
      * Toggle wishlist (AJAX handler).
@@ -30,31 +31,17 @@ class WishlistController extends Controller
      * - Jika user SUDAH like -> Hapus (Unlike/Detach)
      * - Jika user BELUM like -> Tambah (Like/Attach)
      */
-  public function toggle(Request $request)
+ public function toggle(Product $product)
 {
-    $request->validate([
-        'product_id' => 'required|integer|exists:products,id'
-    ]);
+    $user = auth()->user();
 
-    $productId = $request->product_id;
-    $user = Auth::user();
-
-    $exists = $user->wishlists()->where('product_id', $productId)->exists();
-
-    if ($exists) {
-        $user->wishlists()->detach($productId);
-        $added = false;
-        $message = 'Dihapus dari wishlist';
-    } else {
-        $user->wishlists()->attach($productId);
-        $added = true;
-        $message = 'Ditambahkan ke wishlist ❤️';
+    if ($user->wishlistProducts()->where('product_id', $product->id)->exists()) {
+        $user->wishlistProducts()->detach($product->id);
+        return back()->with('success', 'Dihapus dari wishlist');
     }
 
-    return response()->json([
-        'success' => true,
-        'added' => $added,
-        'message' => $message
-    ]);
+    $user->wishlistProducts()->attach($product->id);
+    return back()->with('success', 'Ditambahkan ke wishlist ❤️');
 }
+
 }

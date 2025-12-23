@@ -61,10 +61,7 @@ class User extends Authenticatable
     /**
      * User memiliki banyak item wishlist.
      */
-    public function wishlists()
-    {
-        return $this->hasMany(Wishlist::class);
-    }
+   
 
     /**
      * User memiliki banyak pesanan.
@@ -78,11 +75,10 @@ class User extends Authenticatable
      * Relasi many-to-many ke products melalui wishlists.
      */
     public function wishlistProducts()
-    {
-        return $this->belongsToMany(Product::class, 'wishlists')
-                    ->withTimestamps();
-    }
-
+{
+    return $this->belongsToMany(Product::class, 'wishlists')
+        ->withTimestamps();
+}
     // ==================== HELPER METHODS ====================
 
     /**
@@ -106,7 +102,7 @@ class User extends Authenticatable
      */
     public function hasInWishlist(Product $product): bool
     {
-        return $this->wishlists()
+        return $this->wishlistProducts()
                     ->where('product_id', $product->id)
                     ->exists();
     }

@@ -50,8 +50,8 @@
                     <li class="nav-item position-relative">
                         <a class="nav-link icon-link" href="{{ route('wishlist.index') }}">
                             <i class="bi bi-heart fs-4"></i>
-                            @if(auth()->user()->wishlists()->count() > 0)
-                                <span class="badge-modern badge-wishlist">{{ auth()->user()->wishlists()->count() }}</span>
+                            @if(auth()->user()->wishlistProducts()->count() > 0)
+                                <span class="badge-modern badge-wishlist">{{ auth()->user()->wishlistProducts()->count() }}</span>
                             @endif
                         </a>
                     </li>

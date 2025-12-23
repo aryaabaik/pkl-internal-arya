@@ -1,7 +1,3 @@
-{{-- ================================================
-     FILE: resources/views/home.blade.php
-     FUNGSI: Halaman Utama - Desain Minimalis, Lega & Nyaman 2025
-     ================================================ --}}
 
 @extends('layouts.app')
 

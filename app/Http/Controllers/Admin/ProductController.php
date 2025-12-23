@@ -200,7 +200,7 @@ class ProductController extends Controller
 
             return redirect()->route('admin.products.index')->with('success', 'Produk dihapus!');
         } catch (\Exception $e) {
-            return back()->with('error', 'Gagal menghapus: ' . $e->getMessage());
+            return back()-> with('error', 'Gagal menghapus: ' . $e->getMessage());
         }
     }
 

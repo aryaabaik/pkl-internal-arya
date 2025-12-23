@@ -51,6 +51,12 @@
                         </div>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label">Berat (gram)</label>
+                        <input type="number" name="weight" class="form-control"
+                            value="{{ old('weight') }}" placeholder="Contoh: 500">
+                    </div>
+
                     {{-- Gambar --}}
                     <div class="mb-3">
                         <label class="form-label fw-bold">Upload Gambar</label>

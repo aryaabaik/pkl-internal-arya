@@ -51,9 +51,10 @@ Route::controller(GoogleController::class)->group(function () {
 Route::get('/products', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/products/{slug}', [CatalogController::class, 'show'])->name('catalog.show');
 
-Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])
-     ->name('wishlist.toggle')
-     ->middleware('auth');
+Route::post('/wishlist/{product}', [WishlistController::class, 'toggle'])
+    ->middleware('auth')
+    ->name('wishlist.toggle');
+
 // ================================================
 // HALAMAN YANG BUTUH LOGIN (Customer)
 // ================================================

@@ -63,55 +63,36 @@
 <script>AOS.init({once: true});</script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Tangkap semua tombol wishlist
     document.querySelectorAll('.wishlist-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            const productId = this.getAttribute('data-product-id');
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const productId = this.dataset.productId;
             const icon = this.querySelector('i');
 
-            fetch('{{ route("wishlist.toggle") }}', {
+            fetch(`/wishlist/${productId}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content'),
                     'Accept': 'application/json'
-                },
-                body: JSON.stringify({ product_id: productId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    if (data.added) {
-                        icon.classList.remove('bi-heart');
-                        icon.classList.add('bi-heart-fill', 'text-danger');
-                    } else {
-                        icon.classList.remove('bi-heart-fill', 'text-danger');
-                        icon.classList.add('bi-heart');
-                    }
-
-                    // Optional: Toast notifikasi
-                    const toast = document.createElement('div');
-                    toast.className = 'toast align-items-center text-bg-success border-0 position-fixed bottom-0 end-0 p-3';
-                    toast.style.zIndex = 9999;
-                    toast.innerHTML = `
-                        <div class="d-flex">
-                            <div class="toast-body">${data.message}</div>
-                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                        </div>
-                    `;
-                    document.body.appendChild(toast);
-                    new bootstrap.Toast(toast).show();
-
-                    setTimeout(() => toast.remove(), 3000);
                 }
             })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Gagal mengupdate wishlist. Coba lagi.');
+            .then(res => res.json())
+            .then(data => {
+                if (data.added) {
+                    icon.classList.replace('bi-heart', 'bi-heart-fill');
+                    icon.classList.add('text-danger');
+                } else {
+                    icon.classList.replace('bi-heart-fill', 'bi-heart');
+                    icon.classList.remove('text-danger');
+                }
             });
         });
     });
 });
 </script>
+
 </body>
 </html>
