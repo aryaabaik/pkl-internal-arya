@@ -132,17 +132,17 @@
                     <h5 class="mb-0">Aksi Cepat</h5>
                 </div>
                 <div class="card-body">
-                    {{-- <div class="d-grid gap-2">
+                    <div class="d-grid gap-2">
                         <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
                             <i class="bi bi-plus-circle me-2"></i> Tambah Produk
                         </a>
                         <a href="{{ route('admin.categories.index') }}" class="btn btn-outline-primary">
                             <i class="bi bi-folder-plus me-2"></i> Kelola Kategori
                         </a>
-                        <a href="{{ route('admin.reports.sales') }}" class="btn btn-outline-primary">
+                        <a href="#" class="btn btn-outline-primary">
                             <i class="bi bi-file-earmark-bar-graph me-2"></i> Lihat Laporan
                         </a>
-                    </div> --}}
+                    </div>
                 </div>
             </div>
         </div>

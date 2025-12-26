@@ -1,6 +1,6 @@
 {{-- ================================================
      FILE: resources/views/layouts/app.blade.php
-     FUNGSI: Master layout untuk halaman customer/publik
+     FUNGSI: Master layout halaman publik (Tailwind)
      ================================================ --}}
 
 <!DOCTYPE html>
@@ -9,90 +9,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {{-- CSRF Token untuk AJAX --}}
+    {{-- CSRF Token --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    {{-- SEO Meta Tags --}}
+    {{-- SEO --}}
     <title>@yield('title', 'Toko Online') - {{ config('app.name') }}</title>
     <meta name="description" content="@yield('meta_description', 'Toko online terpercaya dengan produk berkualitas')">
 
     {{-- Favicon --}}
     <link rel="icon" href="{{ asset('favicon.ico') }}">
-    
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-
-    {{-- Google Fonts --}}
+    {{-- Google Font --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    {{-- Vite CSS --}}
+    {{-- AOS --}}
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    {{-- Vite (Tailwind) --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    {{-- Stack untuk CSS tambahan per halaman --}}
+    {{-- Page Specific CSS --}}
     @stack('styles')
 </head>
-<body>
-    {{-- ============================================
+
+<body class="font-inter bg-gray-100 text-gray-800">
+
+    {{-- =============================
          NAVBAR
-         ============================================ --}}
+         ============================= --}}
     @include('profile.partials.nav')
 
-    {{-- ============================================
-         FLASH MESSAGES
-         ============================================ --}}
-    <div class="container mt-3">
+    {{-- =============================
+         FLASH MESSAGE
+         ============================= --}}
+    <div class="max-w-7xl mx-auto px-4 mt-4">
         @include('profile.partials.flash-messages')
     </div>
 
-    {{-- ============================================
+    {{-- =============================
          MAIN CONTENT
-         ============================================ --}}
-    <main class="min-vh-100">
+         ============================= --}}
+    <main class="min-h-screen">
         @yield('content')
+        @yield('head')
     </main>
 
-    {{-- ============================================
+    {{-- =============================
          FOOTER
-         ============================================ --}}
+         ============================= --}}
     @include('profile.partials.footer')
 
-    {{-- Stack untuk JS tambahan per halaman --}}
+    {{-- =============================
+         SCRIPTS
+         ============================= --}}
+         @stack('styles')
     @stack('scripts')
+
+    {{-- AOS --}}
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>AOS.init({once: true});</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.wishlist-btn').forEach(button => {
-        button.addEventListener('click', function (e) {
-            e.preventDefault();
+    <script>
+        AOS.init({ once: true });
+    </script>
 
-            const productId = this.dataset.productId;
-            const icon = this.querySelector('i');
+    {{-- Wishlist Button --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.wishlist-btn').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
 
-            fetch(`/wishlist/${productId}`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document
-                        .querySelector('meta[name="csrf-token"]')
-                        .getAttribute('content'),
-                    'Accept': 'application/json'
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.added) {
-                    icon.classList.replace('bi-heart', 'bi-heart-fill');
-                    icon.classList.add('text-danger');
-                } else {
-                    icon.classList.replace('bi-heart-fill', 'bi-heart');
-                    icon.classList.remove('text-danger');
-                }
+                    const productId = this.dataset.productId;
+                    const icon = this.querySelector('i');
+
+                    fetch(`/wishlist/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document
+                                .querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content'),
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.added) {
+                            icon.classList.replace('bi-heart', 'bi-heart-fill');
+                            icon.classList.add('text-red-500');
+                        } else {
+                            icon.classList.replace('bi-heart-fill', 'bi-heart');
+                            icon.classList.remove('text-red-500');
+                        }
+                    });
+                });
             });
         });
-    });
-});
-</script>
+    </script>
 
 </body>
 </html>
