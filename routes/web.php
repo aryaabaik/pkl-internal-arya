@@ -16,8 +16,11 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\MidtransNotificationController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Services\MidtransService;
 use Illuminate\Support\Facades\Route;
 
 // ================================================
@@ -74,7 +77,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
-    // Pesanan Saya
+   // Pesanan Saya
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
@@ -122,4 +125,29 @@ Route::get('/product/{slug}', [CatalogController::class, 'show'])->name('catalog
 // ================================================
 // AUTH ROUTES (dari Laravel UI)
 // ================================================
+// routes/web.php (HAPUS SETELAH TESTING!)
+
+
+Route::middleware('auth')->group(function () {
+    // ... routes lainnya
+
+    // Payment Routes
+    Route::get('/orders/{order}/pay', [PaymentController::class, 'show'])
+        ->name('orders.pay');
+    Route::get('/orders/{order}/success', [PaymentController::class, 'success'])
+        ->name('orders.success');
+    Route::get('/orders/{order}/pending', [PaymentController::class, 'pending'])
+        ->name('orders.pending');
+});
+
+// routes/web.php
+
+
+// ============================================================
+// MIDTRANS WEBHOOK
+// Route ini HARUS public (tanpa auth middleware)
+// Karena diakses oleh SERVER Midtrans, bukan browser user
+// ============================================================
+Route::post('midtrans/notification', [MidtransNotificationController::class, 'handle'])
+    ->name('midtrans.notification');
 Auth::routes();

@@ -13,13 +13,13 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('order_id')
-                  ->constrained()
-                  ->cascadeOnDelete();
+                ->constrained()
+                ->cascadeOnDelete();
 
             // Restrict delete: jangan hapus produk kalau ada di order
             $table->foreignId('product_id')
-                  ->constrained()
-                  ->restrictOnDelete();
+                ->constrained()
+                ->restrictOnDelete();
 
             // Snapshot data produk saat order
             // (karena harga/nama produk bisa berubah di kemudian hari)
@@ -31,7 +31,6 @@ return new class extends Migration
             $table->timestamps();
         });
     }
-
     public function down(): void
     {
         Schema::dropIfExists('order_items');

@@ -5,162 +5,132 @@
 @section('content')
 
 <style>
-    /* Supaya konten tidak ketiban navbar */
-    .page-offset {
-        margin-top: 90px;
-    }
-
-    /* Sticky sidebar aman */
-    .sticky-summary {
-        position: sticky;
-        top: 120px;
-    }
+    /* Style kamu tetap sama, saya tidak ubah */
+    body { background: #f4f6f9; }
+    .checkout-container { margin-top: 110px; padding-bottom: 100px; }
+    .section-title { font-weight: 700; font-size: 1.9rem; letter-spacing: -.5px; }
+    .soft-card { background: #ffffff; border-radius: 20px; padding: 24px; box-shadow: 0 12px 35px rgba(0,0,0,.06); border: 1px solid #f1f1f1; }
+    .soft-card + .soft-card { margin-top: 20px; }
+    .label { font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+    .form-control { border-radius: 14px; padding: 14px 16px; border: 1px solid #e5e7eb; }
+    .form-control:focus { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
+    .checkout-summary { position: sticky; top: 110px; }
+    .product-row { display: flex; justify-content: space-between; margin-bottom: 14px; }
+    .product-row small { color: #6b7280; }
+    .total-box { background: linear-gradient(135deg, #ecfdf5, #f0fdf4); padding: 16px; border-radius: 14px; font-weight: bold; font-size: 1.1rem; }
+    .checkout-btn { background: linear-gradient(135deg, #22c55e, #16a34a); border: none; color: white; padding: 16px; font-weight: 600; border-radius: 14px; transition: .3s; }
+    .checkout-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(34,197,94,.4); }
+    .fade-in { animation: fade .5s ease; }
+    @keyframes fade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 
-<div class="container py-5 page-offset">
-    <div class="row justify-content-center">
-        <div class="col-lg-11">
+<div class="container checkout-container fade-in">
 
-            <!-- TITLE -->
-            <div class="text-center mb-5">
-                <h2 class="fw-bold text-primary">
-                    <i class="bi bi-cart-check me-2"></i> Checkout Pesanan
-                </h2>
-                <p class="text-muted">
-                    Lengkapi data pengiriman sebelum melanjutkan pembayaran
-                </p>
-            </div>
-
-            @if($cart->items->isEmpty())
-                <div class="text-center py-5">
-                    <i class="bi bi-cart-x display-1 text-muted"></i>
-                    <h4 class="mt-3">Keranjang Masih Kosong</h4>
-                    <p class="text-muted">Silakan pilih produk terlebih dahulu.</p>
-                    <a href="{{ route('catalog.index') }}" class="btn btn-primary mt-3">
-                        <i class="bi bi-shop"></i> Mulai Belanja
-                    </a>
-                </div>
-            @else
-
-            @php
-                $subtotal = $cart->items->sum(fn($item) => ($item->product?->price ?? 0) * $item->quantity);
-                $shippingCost = 15000;
-                $total = $subtotal + $shippingCost;
-            @endphp
-
-            <div class="row g-4">
-
-                <!-- FORM PENGIRIMAN -->
-                <div class="col-lg-7">
-                    <div class="card shadow-sm border-0 rounded-4">
-                        <div class="card-header bg-primary text-white rounded-top-4">
-                            <h5 class="mb-0">
-                                <i class="bi bi-truck me-2"></i> Data Pengiriman
-                            </h5>
-                        </div>
-
-                        <div class="card-body p-4">
-                            <form action="{{ route('checkout.store') }}" method="POST">
-                                @csrf
-
-                                <div class="mb-3">
-                                    <label class="form-label fw-semibold">Nama Penerima</label>
-                                    <input type="text" name="name" class="form-control form-control-lg"
-                                        value="{{ old('name', auth()->user()->name ?? '') }}" required>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-semibold">No. HP</label>
-                                        <input type="text" name="phone" class="form-control form-control-lg"
-                                            value="{{ old('phone', auth()->user()->phone ?? '') }}" required>
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-semibold">Email (Opsional)</label>
-                                        <input type="email" name="email" class="form-control form-control-lg"
-                                            value="{{ old('email', auth()->user()->email ?? '') }}">
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label fw-semibold">Alamat Lengkap</label>
-                                    <textarea name="address" rows="4" class="form-control form-control-lg" required>{{ old('address', auth()->user()->address ?? '') }}</textarea>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="form-label fw-semibold">Catatan (Opsional)</label>
-                                    <textarea name="notes" rows="3" class="form-control"></textarea>
-                                </div>
-
-                                <button type="submit"
-                                    class="btn btn-success btn-lg w-100 fw-bold shadow-sm">
-                                    <i class="bi bi-credit-card-2-front me-2"></i>
-                                    Buat Pesanan
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- RINGKASAN PESANAN -->
-                <div class="col-lg-5">
-                    <div class="card shadow-lg border-0 rounded-4 sticky-summary">
-                        <div class="card-header bg-dark text-white rounded-top-4">
-                            <h5 class="mb-0">
-                                <i class="bi bi-receipt-cutoff me-2"></i> Ringkasan Pesanan
-                            </h5>
-                        </div>
-
-                        <div class="card-body p-4">
-
-                            @foreach($cart->items as $item)
-                                <div class="d-flex justify-content-between mb-3">
-                                    <div>
-                                        <strong>{{ $item->product?->name }}</strong><br>
-                                        <small class="text-muted">
-                                            {{ $item->quantity }} x Rp {{ number_format($item->product?->price) }}
-                                        </small>
-                                    </div>
-                                    <span class="fw-semibold">
-                                        Rp {{ number_format($item->quantity * $item->product?->price) }}
-                                    </span>
-                                </div>
-                            @endforeach
-
-                            <hr>
-
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Subtotal</span>
-                                <span>Rp {{ number_format($subtotal) }}</span>
-                            </div>
-
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Ongkir</span>
-                                <span>Rp {{ number_format($shippingCost) }}</span>
-                            </div>
-
-                            <div class="d-flex justify-content-between bg-light p-3 rounded">
-                                <strong>Total</strong>
-                                <strong class="text-success">
-                                    Rp {{ number_format($total) }}
-                                </strong>
-                            </div>
-
-                            <div class="mt-3 text-muted small">
-                                <i class="bi bi-shield-check"></i>
-                                Pembayaran aman & terenkripsi
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            @endif
-        </div>
+    <div class="text-center mb-5">
+        <h1 class="section-title">Checkout</h1>
+        <p class="text-muted">Lengkapi informasi untuk menyelesaikan pesanan</p>
     </div>
+
+    @php
+        $subtotal = $cart->items->sum(fn($i) => ($i->product?->price ?? 0) * $i->quantity);
+        $shipping = 15000;
+        $total = $subtotal + $shipping;
+    @endphp
+
+    <!-- TAMBAHAN: Form dengan method POST dan CSRF -->
+    <form action="{{ route('checkout.store') }}" method="POST">
+        @csrf
+
+        <div class="row g-4">
+
+            <!-- LEFT -->
+            <div class="col-lg-7">
+
+                <div class="soft-card">
+                    <h5 class="mb-3 fw-bold">📦 Data Penerima</h5>
+
+                    <div class="mb-3">
+                        <label class="label">Nama Penerima</label>
+                        <input type="text" name="name" class="form-control" value="{{ old('name', auth()->user()->name ?? '') }}" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="label">No. HP</label>
+                            <input type="text" name="phone" class="form-control" value="{{ old('phone', auth()->user()->phone ?? '') }}" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="label">Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ old('email', auth()->user()->email ?? '') }}" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="soft-card">
+                    <h5 class="mb-3 fw-bold">📍 Alamat Pengiriman</h5>
+                    <textarea name="address" class="form-control" rows="4" required>{{ old('address', auth()->user()->address ?? '') }}</textarea>
+                </div>
+
+                <div class="soft-card">
+                    <h5 class="mb-3 fw-bold">📝 Catatan (Opsional)</h5>
+                    <textarea name="notes" class="form-control" rows="3">{{ old('notes') }}</textarea>
+                </div>
+
+            </div>
+
+            <!-- RIGHT -->
+            <div class="col-lg-5">
+                <div class="soft-card checkout-summary">
+
+                    <h5 class="fw-bold mb-3">🧾 Ringkasan Pesanan</h5>
+
+                    @foreach($cart->items as $item)
+                    <div class="product-row">
+                        <div>
+                            <strong>{{ $item->product->name }}</strong><br>
+                            <small>{{ $item->quantity }} x Rp {{ number_format($item->product->price) }}</small>
+                        </div>
+                        <div>
+                            <strong>Rp {{ number_format($item->quantity * $item->product->price) }}</strong>
+                        </div>
+                    </div>
+                    @endforeach
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between">
+                        <span>Subtotal</span>
+                        <span>Rp {{ number_format($subtotal) }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <span>Ongkir</span>
+                        <span>Rp {{ number_format($shipping) }}</span>
+                    </div>
+
+                    <div class="total-box mt-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Total</span>
+                            <span>Rp {{ number_format($total) }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Button sekarang berada di dalam form, jadi bisa submit -->
+                    <button type="submit" class="checkout-btn w-100 mt-4">
+                        🔒 Buat Pesanan
+                    </button>
+
+                    <p class="text-muted text-center mt-3 small">
+                        🔒 Pembayaran aman & terenkripsi
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </form>
+    <!-- AKHIR FORM -->
+
 </div>
 
 @endsection
