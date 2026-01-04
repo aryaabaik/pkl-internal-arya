@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Services\MidtransService;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 // ================================================
 // HALAMAN PUBLIK (Tanpa Login)
@@ -118,6 +119,10 @@ Route::middleware(['auth', 'admin'])
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    // Laporan 
+    Route::get('/reports/sales', [App\Http\Controllers\Admin\ReportController::class, 'sales'])->name('reports.sales');
+    Route::get('/reports/sales/export', [App\Http\Controllers\Admin\ReportController::class, 'exportSales'])->name('reports.export-sales');
+
 });
 
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
@@ -138,6 +143,11 @@ Route::middleware('auth')->group(function () {
         ->name('orders.success');
     Route::get('/orders/{order}/pending', [PaymentController::class, 'pending'])
         ->name('orders.pending');
+    Route::post('/payment/snap/{order}', [PaymentController::class, 'snap'])
+        ->name('payment.snap')
+        ->middleware('auth');
+
+    
 });
 
 // routes/web.php

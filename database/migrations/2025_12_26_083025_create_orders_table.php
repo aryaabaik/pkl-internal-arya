@@ -35,6 +35,10 @@ return new class extends Migration
 
             // Indexing
             $table->index('order_number');
+
+            $table->string('snap_token')->nullable();
+
+
         });
     }
 

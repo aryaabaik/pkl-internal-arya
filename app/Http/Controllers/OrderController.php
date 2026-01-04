@@ -15,7 +15,7 @@ class OrderController extends Controller
         // PENTING: Jangan gunakan Order::all() !
         // Kita hanya mengambil order milik user yg sedang login menggunakan relasi hasMany.
         // auth()->user()->orders() akan otomatis memfilter: WHERE user_id = current_user_id
-        $orders = auth()->user()->orders()
+        $orders = Order::where('user_id', auth()->id())
             ->with(['items.product']) // Eager Load nested: Order -> OrderItems -> Product
             ->latest() // Urutkan dari pesanan terbaru
             ->paginate(10);
