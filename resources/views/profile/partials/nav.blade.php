@@ -46,8 +46,7 @@
                 </li>
 
                 @auth
-                    {{-- Wishlist --}}
-                    <li class="nav-item position-relative">
+                    {{-- Wishlist --}}                    <li class="nav-item position-relative">
                         <a class="nav-link icon-link" href="{{ route('wishlist.index') }}">
                             <i class="bi bi-heart fs-4"></i>
                             @if(auth()->user()->wishlistProducts()->count() > 0)

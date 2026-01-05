@@ -11,6 +11,17 @@ use Illuminate\Support\Facades\Log;
 
 class MidtransNotificationController extends Controller
 {
+    // app/Http/Controllers/MidtransNotificationController.php
+private function setSuccess(Order $order)
+{
+    $order->update([
+        'status' => 'processing',
+        'payment_status' => 'paid',
+    ]);
+
+    // Fire & Forget
+    event(new OrderPaidEvent($order));
+}
     /**
      * Handle incoming webhook notification from Midtrans.
      * URL: POST /midtrans/notification
@@ -195,4 +206,5 @@ class MidtransNotificationController extends Controller
             $payment->update(['status' => 'refunded']);
         }
     }
+    
 }

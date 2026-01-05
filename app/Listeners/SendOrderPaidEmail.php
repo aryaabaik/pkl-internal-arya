@@ -13,6 +13,7 @@ class SendOrderPaidEmail implements ShouldQueue // <--- PENTING
     // Retry jika gagal
     public $tries = 3;
 
+
     public function handle(OrderPaidEvent $event): void
     {
         // Kirim email ke user

@@ -147,10 +147,26 @@ Route::middleware('auth')->group(function () {
         ->name('payment.snap')
         ->middleware('auth');
 
+        // routes/web.php
+Route::get('/payment/finish', function () {
+    return view('payment.finish');
+});
+
+Route::get('/payment/unfinish', function () {
+    return view('payment.unfinish');
+});
+
+Route::get('/payment/error', function () {
+    return view('payment.error');
+});
+
+
     
 });
 
 // routes/web.php
+// routes/web.php
+Route::post('/midtrans/webhook', [MidtransNotificationController::class, 'handle']);
 
 
 // ============================================================
@@ -160,4 +176,7 @@ Route::middleware('auth')->group(function () {
 // ============================================================
 Route::post('midtrans/notification', [MidtransNotificationController::class, 'handle'])
     ->name('midtrans.notification');
+
+// Batasi 5 request per menit
+Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:5,1');
 Auth::routes();

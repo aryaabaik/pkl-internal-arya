@@ -6,30 +6,94 @@
 @section('content')
     {{-- Hero Section - Lega, fokus teks + ilustrasi minimalist --}}
     <section class="hero-gradient text-white py-5 mb-5">
-        <div class="container py-lg-5">
-            <div class="row align-items-center gy-5">
-                <div class="col-lg-6" data-aos="fade-right">
-                    <h1 class="display-4 fw-bold mb-4">
-                        Belanja Online Mudah & Terpercaya
-                    </h1>
-                    <p class="lead mb-5 opacity-90">
-                        Temukan berbagai produk berkualitas dengan harga terbaik.<br>
-                        Gratis ongkir untuk pembelian pertama!
-                    </p>
-                    <a href="{{ route('catalog.index') }}" class="btn btn-light btn-lg px-5 py-3 rounded-pill">
+    <div class="container py-lg-5">
+        <div class="row align-items-center gy-5">
+
+            <!-- TEXT -->
+            <div class="col-lg-6" data-aos="fade-right">
+                <span class="badge bg-light text-dark px-3 py-2 rounded-pill mb-3">
+                    ✨ Belanja Praktis
+                </span>
+
+                <h1 class="display-4 fw-bold mb-4">
+                    Belanja Online<br>
+                    <span class="text-warning">Cepat, Mudah & Terpercaya</span>
+                </h1>
+
+                <p class="lead mb-5 opacity-90">
+                    Temukan produk pilihan dengan kualitas terbaik.<br>
+                    <strong>Gratis ongkir</strong> untuk pembelian pertama!
+                </p>
+
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="{{ route('catalog.index') }}"
+                       class="btn btn-light btn-lg px-5 py-3 rounded-pill shadow">
                         <i class="bi bi-bag me-2"></i>Mulai Belanja
                     </a>
-                </div>
-                <div class="col-lg-6 text-center" data-aos="fade-left">
-                    <img src="images/joko.jpeg"
-                         alt="Ilustrasi Belanja Online Minimalist"
-                         class="img-fluid rounded-4 "
-                         style="max-height: 420px; object-fit: contain;">
-                    {{-- Ganti dengan salah satu rekomendasi di atas untuk variasi --}}
+
+                    <a href="#promo"
+                       class="btn btn-outline-light btn-lg px-4 py-3 rounded-pill">
+                        Lihat Promo
+                    </a>
                 </div>
             </div>
+
+            <!-- IMAGE SLIDER -->
+            <div class="col-lg-6" data-aos="fade-left">
+                <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+
+                    <div class="carousel-inner rounded-4 shadow-lg">
+
+                        <div class="carousel-item active">
+                            <img src="images/joko.jpeg"
+                                 class="d-block w-100"
+                                 style="max-height:420px; object-fit:cover;"
+                                 alt="Belanja Online 1">
+                        </div>
+
+                        <div class="carousel-item">
+                            <img src="images/1.PNG"
+                                 class="d-block w-100"
+                                 style="max-height:420px; object-fit:cover;"
+                                 alt="Belanja Online 2">
+                        </div>
+
+                        <div class="carousel-item">
+                            <img src="images/bahlil.jfif"
+                                 class="d-block w-100"
+                                 style="max-height:420px; object-fit:cover;"
+                                 alt="Belanja Online 3">
+                        </div>
+
+                    </div>
+
+                    <!-- CONTROL -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+
+                    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                </div>
+            </div>
+
         </div>
-    </section>
+    </div>
+</section>
+<style>
+.hero-gradient {
+    background: linear-gradient(135deg, #1d2671, #c33764);
+}
+
+.carousel-inner img {
+    transition: transform 0.6s ease;
+}
+
+.carousel-inner img:hover {
+    transform: scale(1.03);
+}
+</style>
 
     {{-- Kategori Populer - Ikon lebih besar & rapi --}}
     <section class="py-6 py-lg-9 mb-5">
