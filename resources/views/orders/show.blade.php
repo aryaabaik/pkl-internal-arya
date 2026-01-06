@@ -86,34 +86,52 @@
 
 {{-- Script Midtrans --}}
 @if($order->payment_status !== 'paid')
-    @push('scripts')
-        <script src="https://app.sandbox.midtrans.com/snap/snap.js"
-            data-client-key="{{ config('midtrans.client_key') }}"></script>
+@push('scripts')
+<script src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="{{ config('midtrans.client_key') }}"></script>
 
-        <script>
-            document.getElementById('pay-button')?.addEventListener('click', function () {
-                fetch(`/payment/snap/{{ $order->id }}`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.token) {
-                        snap.pay(data.token);
-                    } else {
-                        alert(data.error ?? 'Gagal mendapatkan token pembayaran');
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert('Terjadi kesalahan.');
-                });
-            });
-        </script>
-    @endpush
+<script>
+document.getElementById('pay-button')?.addEventListener('click', function () {
+    fetch("{{ route('payment.snap', $order) }}", {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.token) {
+            alert(data.error ?? 'Gagal mendapatkan token');
+            return;
+        }
+
+        snap.pay(data.token, {
+           // Kirim ID order saat redirect
+            // ... di dalam snap.pay ...
+onSuccess: function (result) {
+    // data.order_id didapat dari response json method snap tadi
+    window.location.href = "{{ url('/orders/success') }}/" + data.order_id;
+},
+onPending: function (result) {
+    window.location.href = "{{ url('/orders/pending') }}/" + data.order_id;
+},
+            onError: function () {
+                alert('Pembayaran gagal');
+            },
+            onClose: function () {
+                alert('Popup pembayaran ditutup');
+            }
+        });
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Terjadi kesalahan sistem');
+    });
+});
+</script>
+@endpush
+
 @endif
 
 @endsection

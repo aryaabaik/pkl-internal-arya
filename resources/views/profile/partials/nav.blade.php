@@ -7,7 +7,7 @@
     <div class="container px-4 py-3">
         {{-- Logo --}}
         <a class="navbar-brand d-flex align-items-center text-decoration-none" href="{{ route('home') }}">
-            <img src="https://img.freepik.com/premium-vector/trendy-minimal-shopping-bag-love-vector-logo-design_766194-3027.jpg" 
+            <img src="images/8.jpg" 
                  alt="TokoOnline Logo" 
                  class="me-3" 
                  width="60" 

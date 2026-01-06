@@ -60,12 +60,19 @@ private function setSuccess(Order $order)
         if ($signatureKey !== $expectedSignature) {
             Log::warning('Midtrans Notification: Invalid signature', [
                 'order_id' => $orderId,
+                'provided_signature' => is_string($signatureKey) ? substr($signatureKey, 0, 32) : null,
+                'expected_signature' => substr($expectedSignature, 0, 32),
+                'status_code' => $statusCode,
+                'gross_amount' => $grossAmount,
             ]);
             return response()->json(['message' => 'Invalid signature'], 403);
         }
 
         // 5. Cari order (PAKAI order_number)
-        $order = Order::where('order_number', $orderId)->first();
+        // Support: Midtrans order_id may contain extra suffix we added when
+        // creating Snap (format: {order_number}-{order_id}-{uniq}).
+        $originalOrderNumber = explode('-', $orderId)[0] ?? $orderId;
+        $order = Order::where('order_number', $originalOrderNumber)->first();
 
         if (!$order) {
             Log::warning('Midtrans Notification: Order not found', [
@@ -143,8 +150,10 @@ private function setSuccess(Order $order)
     {
         Log::info("Payment SUCCESS for Order {$order->order_number}");
 
+        // Payment succeeded -> mark order completed
         $order->update([
-            'status' => 'processing',
+            'status' => 'completed',
+            'payment_status' => 'paid',
         ]);
 
         if ($payment) {
@@ -170,6 +179,9 @@ private function setSuccess(Order $order)
         if ($payment) {
             $payment->update(['status' => 'pending']);
         }
+        // Pastikan status order juga diset ke 'pending' sehingga UI tidak
+        // terus menampilkan status lama dan agar alur selanjutnya jelas.
+        $order->update(['status' => 'pending']);
     }
 
     /**

@@ -25,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'midtrans/notification', // Endpoint webhook kita
             'midtrans/*',            // Wildcard (jika ada route lain)
+            'api/midtrans-callback'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

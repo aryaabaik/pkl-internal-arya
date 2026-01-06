@@ -5,10 +5,10 @@ namespace App\Listeners;
 
 use App\Events\OrderPaidEvent;
 use App\Mail\OrderPaid;
-use Illuminate\Contracts\Queue\ShouldQueue; // <--- PENTING
+use Illuminate\Contracts\Queue\ShouldQueueAfterCommit; // <--- PENTING
 use Illuminate\Support\Facades\Mail;
 
-class SendOrderPaidEmail implements ShouldQueue // <--- PENTING
+class SendOrderPaidEmail implements ShouldQueueAfterCommit // <--- PENTING
 {
     // Retry jika gagal
     public $tries = 3;

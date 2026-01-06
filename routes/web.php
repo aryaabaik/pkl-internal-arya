@@ -134,35 +134,34 @@ Route::get('/product/{slug}', [CatalogController::class, 'show'])->name('catalog
 
 
 Route::middleware('auth')->group(function () {
-    // ... routes lainnya
 
-    // Payment Routes
+    // ======================
+    // ORDER PAYMENT FLOW
+    // ======================
+
+    // Halaman bayar (aman pakai {order})
     Route::get('/orders/{order}/pay', [PaymentController::class, 'show'])
         ->name('orders.pay');
-    Route::get('/orders/{order}/success', [PaymentController::class, 'success'])
-        ->name('orders.success');
-    Route::get('/orders/{order}/pending', [PaymentController::class, 'pending'])
-        ->name('orders.pending');
+
+    // Generate Snap Token
     Route::post('/payment/snap/{order}', [PaymentController::class, 'snap'])
-        ->name('payment.snap')
-        ->middleware('auth');
+        ->name('payment.snap');
 
-        // routes/web.php
-Route::get('/payment/finish', function () {
-    return view('payment.finish');
+    // ======================
+    // MIDTRANS REDIRECT
+    // ======================
+
+    // ❗ JANGAN pakai {order}
+    Route::get('/orders/success/{order}', [PaymentController::class, 'success'])
+        ->name('orders.success');
+
+    Route::get('/orders/pending/{order}', [PaymentController::class, 'pending'])
+        ->name('orders.pending');
+
+        // routes/api.php
+Route::post('/midtrans-callback', [PaymentController::class, 'callback']);
 });
 
-Route::get('/payment/unfinish', function () {
-    return view('payment.unfinish');
-});
-
-Route::get('/payment/error', function () {
-    return view('payment.error');
-});
-
-
-    
-});
 
 // routes/web.php
 // routes/web.php

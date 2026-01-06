@@ -1,50 +1,168 @@
 <?php
-// app/Http/Controllers/PaymentController.php
 
 namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Services\MidtransService;
-use Illuminate\Support\Facades\Auth;
-
+use App\Events\OrderPaidEvent;
+use Exception;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
     /**
-     * Mengambil Snap Token untuk order ini (API Endpoint).
-     * Dipanggil via AJAX dari frontend saat user klik "Bayar".
+     * HALAMAN BAYAR
      */
-    public function snap(Order $order, MidtransService $midtransService)
+    public function show(Order $order)
     {
-        // 1. Authorization: Pastikan user adalah pemilik order
-             if ($order->user_id !== auth()->id()) {
+        if ($order->user_id !== auth()->id()) {
             abort(403);
         }
 
-
-        // 2. Cek apakah order sudah dibayar
-        if ($order->payment_status === 'paid') {
-            return response()->json(['error' => 'Pesanan sudah dibayar.'], 400);
-        }
-
-        try {
-            // 3. Generate Snap Token dari Midtrans
-            $snapToken = $midtransService->createSnapToken($order);
-
-            // 4. Simpan token ke database untuk referensi
-            $order->update([
-                'snap_token' => $snapToken
-            ]);
-
-            // 5. Kirim token ke frontend
-            return response()->json([
-                'token' => $snapToken
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        return view('orders.pay', compact('order'));
     }
+
+    /**
+     * AMBIL SNAP TOKEN (AJAX)
+     */
+   /**
+ * AMBIL SNAP TOKEN (AJAX)
+ */
+public function snap(Order $order, MidtransService $midtransService)
+{
+    // ... kode pengecekan auth & status (tetap sama) ...
+
+    $snapToken = $midtransService->createSnapToken($order);
+
+    $order->update(['snap_token' => $snapToken]);
+
+    return response()->json([
+        'token' => $snapToken,
+        'order_id' => $order->id // TAMBAHKAN INI agar JS bisa baca ID-nya
+    ]);
+}
+
+/**
+ * SUCCESS PAGE
+ */
+public function success(Order $order, MidtransService $midtransService)
+{
+    // Coba cek status transaksi langsung via Midtrans sebagai fallback
+    // jika webhook belum ter-trigger atau tidak sampai ke server.
+    try {
+        $status = $midtransService->checkStatus($order->order_number);
+    } catch (Exception $e) {
+        return view('orders.success', compact('order'));
+    }
+
+    $transactionStatus = $status->transaction_status ?? $status['transaction_status'] ?? null;
+    $fraudStatus = $status->fraud_status ?? $status['fraud_status'] ?? null;
+
+    if ($transactionStatus === 'capture') {
+        if ($fraudStatus === 'challenge') {
+            $order->update(['status' => 'pending']);
+            $order->payment?->update(['status' => 'pending']);
+        } else {
+            // Payment successful -> complete the order
+            $order->update(['status' => 'completed', 'payment_status' => 'paid']);
+            $order->payment?->update([
+                'status' => 'success',
+                'midtrans_transaction_id' => $status->transaction_id ?? null,
+                'paid_at' => now(),
+            ]);
+            event(new OrderPaidEvent($order));
+        }
+    } elseif ($transactionStatus === 'settlement') {
+        $order->update(['status' => 'completed', 'payment_status' => 'paid']);
+        $order->payment?->update([
+            'status' => 'success',
+            'midtrans_transaction_id' => $status->transaction_id ?? null,
+            'paid_at' => now(),
+        ]);
+        event(new OrderPaidEvent($order));
+    } elseif ($transactionStatus === 'pending') {
+        $order->update(['status' => 'pending']);
+        $order->payment?->update(['status' => 'pending']);
+    } elseif (in_array($transactionStatus, ['deny', 'cancel', 'expire'])) {
+        $order->update(['status' => 'cancelled']);
+        $order->payment?->update(['status' => 'failed']);
+    }
+
+    return view('orders.success', compact('order'));
+}
+
+/**
+ * PENDING PAGE
+ */
+public function pending(Order $order) // Tambahkan parameter Order $order
+{
+    return view('orders.pending', compact('order'));
+}
+
+/**
+ * HANDLE WEBHOOK DARI MIDTRANS
+ * Fungsi ini yang akan dipanggil Midtrans di belakang layar (server-to-server)
+ */
+public function callback(Request $request, MidtransService $midtransService)
+{
+    try {
+        // Ambil data dari request Midtrans
+        $notification = $request->all();
+        $orderNumber = $notification['order_id'];
+
+        // Cari order berdasarkan order_number
+        $order = Order::where('order_number', $orderNumber)->first();
+
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+
+        // Gunakan checkStatus dari service kamu untuk validasi keamanan (Signature Key)
+        $status = $midtransService->checkStatus($orderNumber);
+        
+        $transactionStatus = $status->transaction_status;
+        $fraudStatus = $status->fraud_status;
+
+        if ($transactionStatus == 'capture') {
+            if ($fraudStatus == 'challenge') {
+                $order->update(['status' => 'pending']);
+            } else {
+                $this->markAsPaid($order, $status);
+            }
+        } elseif ($transactionStatus == 'settlement') {
+            $this->markAsPaid($order, $status);
+        } elseif ($transactionStatus == 'pending') {
+            $order->update(['status' => 'pending']);
+        } elseif (in_array($transactionStatus, ['deny', 'expire', 'cancel'])) {
+            $order->update(['status' => 'cancelled']);
+        }
+
+        return response()->json(['message' => 'OK']);
+
+    } catch (\Exception $e) {
+        return response()->json(['message' => $e->getMessage()], 500);
+    }
+}
+
+/**
+ * Helper untuk update status berbayar
+ */
+private function markAsPaid($order, $status)
+{
+    $order->update([
+        'status' => 'completed', 
+        'payment_status' => 'paid'
+    ]);
+    
+    // Jika kamu punya tabel payments, update juga
+    if ($order->payment) {
+        $order->payment->update([
+            'status' => 'success',
+            'midtrans_transaction_id' => $status->transaction_id,
+            'paid_at' => now(),
+        ]);
+    }
+    
+    event(new OrderPaidEvent($order));
+}
 }

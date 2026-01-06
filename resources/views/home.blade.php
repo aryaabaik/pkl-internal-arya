@@ -52,14 +52,14 @@
                         </div>
 
                         <div class="carousel-item">
-                            <img src="images/1.PNG"
+                            <img src="images/8.jpg"
                                  class="d-block w-100"
                                  style="max-height:420px; object-fit:cover;"
                                  alt="Belanja Online 2">
                         </div>
 
                         <div class="carousel-item">
-                            <img src="images/bahlil.jfif"
+                            <img src="images/ribka.jfif"
                                  class="d-block w-100"
                                  style="max-height:420px; object-fit:cover;"
                                  alt="Belanja Online 3">

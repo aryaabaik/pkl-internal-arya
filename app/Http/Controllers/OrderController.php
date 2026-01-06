@@ -1,21 +1,22 @@
 <?php
+// app/Http/Controllers/OrderController.php
 
 namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
-use Midtrans\Config; // Harus di sini (Luar Class)
-use Midtrans\Snap;   // Harus di sini (Luar Class)
 
 class OrderController extends Controller
 {
-
-     public function index()
+    /**
+     * Menampilkan daftar pesanan milik user yang sedang login.
+     */
+    public function index()
     {
         // PENTING: Jangan gunakan Order::all() !
         // Kita hanya mengambil order milik user yg sedang login menggunakan relasi hasMany.
         // auth()->user()->orders() akan otomatis memfilter: WHERE user_id = current_user_id
-        $orders = Order::where('user_id', auth()->id())
+        $orders = auth()->user()->orders()
             ->with(['items.product']) // Eager Load nested: Order -> OrderItems -> Product
             ->latest() // Urutkan dari pesanan terbaru
             ->paginate(10);
@@ -23,28 +24,48 @@ class OrderController extends Controller
         return view('orders.index', compact('orders'));
     }
 
-    public function __construct()
-    {
-        // Set konfigurasi Midtrans
-        Config::$serverKey = config('midtrans.server_key');
-        Config::$isProduction = config('midtrans.is_production');
-        Config::$isSanitized = config('midtrans.is_sanitized');
-        Config::$is3ds = config('midtrans.is_3ds');
+    /**
+     * Menampilkan detail satu pesanan.
+     */
+    public function show(Order $order)
+{
+    $order->load(['items', 'user']);
+
+    $snapToken = $order->snap_token; // ambil dulu dari DB
+
+    if ($order->status === 'pending' && !$snapToken && $order->total_amount > 0) {
+        // Generate baru jika belum ada
+        $midtrans = new \App\Services\MidtransService(); // atau inject
+        $snapToken = $midtrans->createSnapToken($order);
+
+        if ($snapToken) {
+            // SIMPAN KE DATABASE — INI YANG PALING PENTING!
+            $order->update(['snap_token' => $snapToken]);
+        }
     }
 
-  public function show(Order $order)
+    return view('orders.show', compact('order', 'snapToken'));
+}
+
+    /**
+     * Menampilkan halaman status pembayaran sukses.
+     */
+    public function success(Order $order)
     {
-        // 1. Authorize (Security Check)
-        // User A TIDAK BOLEH melihat pesanan User B.
-        // Kita cek apakah ID pemilik order sama dengan ID user yang login.
         if ($order->user_id !== auth()->id()) {
             abort(403, 'Anda tidak memiliki akses ke pesanan ini.');
         }
+        return view('orders.success', compact('order'));
+    }
 
-        // 2. Load relasi detail
-        // Kita butuh data items dan gambar produknya untuk ditampilkan di invoice view.
-        $order->load(['items.product', 'items.product.primaryImage']);
-
-        return view('orders.show', compact('order'));
+    /**
+     * Menampilkan halaman status pembayaran pending.
+     */
+    public function pending(Order $order)
+    {
+        if ($order->user_id !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke pesanan ini.');
+        }
+        return view('orders.pending', compact('order'));
     }
 }
