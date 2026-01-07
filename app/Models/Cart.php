@@ -42,8 +42,9 @@ class Cart extends Model
      */
     public function getTotalPriceAttribute(): float
     {
+        // Hitung total menggunakan harga tampilan produk (include diskon)
         return $this->items->sum(function ($item) {
-            return $item->quantity * $item->product->price;
+            return (float) $item->quantity * $item->product->display_price;
         });
     }
 }

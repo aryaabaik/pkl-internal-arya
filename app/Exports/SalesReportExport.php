@@ -3,14 +3,15 @@
 namespace App\Exports;
 
 use App\Models\Order;
-use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Illuminate\Support\Collection;
 
-class SalesReportExport implements FromQuery, WithHeadings, WithMapping, WithStyles
+class SalesReportExport implements FromCollection, WithHeadings, WithMapping, WithStyles
 {
     use Exportable;
 
@@ -20,16 +21,16 @@ class SalesReportExport implements FromQuery, WithHeadings, WithMapping, WithSty
     ) {}
 
     /**
-     * 1. Query Data
+     * 1. Ambil Data sebagai Collection untuk diexport
      */
-    public function query()
+    public function collection(): Collection
     {
-        return Order::query()
-            ->with(['user', 'items'])
+        return Order::with(['user', 'items'])
             ->whereDate('created_at', '>=', $this->dateFrom)
             ->whereDate('created_at', '<=', $this->dateTo)
             ->where('payment_status', 'paid')
-            ->orderBy('created_at', 'asc');
+            ->orderBy('created_at', 'asc')
+            ->get();
     }
 
     /**

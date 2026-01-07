@@ -103,7 +103,7 @@
                         </nav>
 
                         {{-- User Info --}}
-                        <div class="p-3 border-top border-secondary">
+                        <a href="profile.edit"><div class="p-3 border-top border-secondary">
                             <div class="d-flex align-items-center text-white">
                                 <img src="{{ auth()->user()->avatar_url }}"
                                     class="rounded-circle me-2" width="36" height="36">
@@ -114,6 +114,7 @@
                             </div>
                         </div>
                     </div>
+                    </a>
 
                     {{-- Main Content --}}
                     <div class="flex-grow-1">

@@ -32,12 +32,21 @@ public function snap(Order $order, MidtransService $midtransService)
 {
     // ... kode pengecekan auth & status (tetap sama) ...
 
-    $snapToken = $midtransService->createSnapToken($order);
+    $snapResponse = $midtransService->createSnapToken($order);
+
+    if (is_array($snapResponse)) {
+        $snapToken = $snapResponse['token'] ?? null;
+        $midtransOrderId = $snapResponse['midtrans_order_id'] ?? $order->order_number;
+    } else {
+        $snapToken = $snapResponse;
+        $midtransOrderId = $order->order_number;
+    }
 
     $order->update(['snap_token' => $snapToken]);
 
     return response()->json([
         'token' => $snapToken,
+        'midtrans_order_id' => $midtransOrderId,
         'order_id' => $order->id // TAMBAHKAN INI agar JS bisa baca ID-nya
     ]);
 }
@@ -50,7 +59,8 @@ public function success(Order $order, MidtransService $midtransService)
     // Coba cek status transaksi langsung via Midtrans sebagai fallback
     // jika webhook belum ter-trigger atau tidak sampai ke server.
     try {
-        $status = $midtransService->checkStatus($order->order_number);
+            $midtransOrderId = $order->midtrans_order_id ?? $order->order_number;
+            $status = $midtransService->checkStatus($midtransOrderId);
     } catch (Exception $e) {
         return view('orders.success', compact('order'));
     }
@@ -140,6 +150,9 @@ public function callback(Request $request, MidtransService $midtransService)
         return response()->json(['message' => 'OK']);
 
     } catch (\Exception $e) {
+                    if (!empty($midtransOrderId)) {
+                        $order->update(['midtrans_order_id' => $midtransOrderId]);
+                    }
         return response()->json(['message' => $e->getMessage()], 500);
     }
 }

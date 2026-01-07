@@ -34,6 +34,7 @@ class CartItem extends Model
      */
     public function getSubtotalAttribute(): float
     {
-        return $this->quantity * $this->product->price;
+        // Gunakan harga yang ditampilkan produk (memperhitungkan diskon)
+        return (float) $this->quantity * $this->product->display_price;
     }
 }
