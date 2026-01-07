@@ -7,21 +7,24 @@
 {{-- SWIPER CDN --}}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
     :root {
-        --tkp-primary: #60A5FA; /* sky blue */
+        --tkp-primary: #60A5FA;
         --tkp-primary-dark: #1E90FF;
         --tkp-primary-light: #EAF6FF;
         --text-dark: #1a1d23;
         --text-muted: #64748b;
         --bg-body: #ffffff;
+        --transition-smooth: all 0.3s cubic-bezier(.2,.9,.3,1);
     }
 
     body {
         background-color: var(--bg-body);
         color: var(--text-dark);
         font-family: 'Plus Jakarta Sans', sans-serif;
+        scroll-behavior: smooth;
     }
 
     /* ===== HERO BANNER ===== */
@@ -29,17 +32,21 @@
         padding-top: 24px;
     }
 
-    /* Common section base */
     .section-block {
         padding-top: 28px;
         padding-bottom: 28px;
         border-radius: 14px;
     }
 
-    /* Alternating subtle backgrounds to separate sections */
-    .section-block.alt-bg { background: linear-gradient(180deg,#fbfdff,#ffffff); }
+    .section-block.alt-bg { 
+        background: linear-gradient(180deg,#fbfdff,#ffffff); 
+    }
 
-    .section-divider { height: 1px; background: rgba(15,23,42,0.04); margin: 18px 0; }
+    .section-divider { 
+        height: 1px; 
+        background: rgba(15,23,42,0.04); 
+        margin: 18px 0; 
+    }
 
     /* ===== HERO OVERLAY & SEARCH ===== */
     .hero-overlay {
@@ -60,15 +67,26 @@
         text-align: center;
         color: #fff;
         text-shadow: 0 6px 20px rgba(6,10,26,0.32);
+        animation: slideUp 0.8s ease forwards;
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .hero-overlay h1 {
         font-size: 2.1rem;
         font-weight: 800;
         margin-bottom: 8px;
+        letter-spacing: -1px;
     }
 
-    .hero-overlay p { margin-bottom: 16px; opacity: 0.95; }
+    .hero-overlay p { 
+        margin-bottom: 16px; 
+        opacity: 0.95;
+        font-size: 1.05rem;
+    }
 
     .search-hero {
         display: flex;
@@ -76,45 +94,50 @@
         justify-content: center;
         max-width: 720px;
         margin: 0 auto;
+        animation: slideUp 0.8s ease 0.2s forwards;
+        opacity: 0;
     }
 
     .search-hero input[type="search"] {
         flex: 1;
-        padding: 12px 14px;
+        padding: 14px 18px;
         border-radius: 999px;
         border: none;
         box-shadow: 0 6px 18px rgba(3,7,18,0.18);
+        backdrop-filter: blur(8px);
+        background: rgba(255,255,255,0.85);
+        font-size: 0.95rem;
+        transition: var(--transition-smooth);
+    }
+
+    .search-hero input[type="search"]:focus {
+        outline: none;
+        box-shadow: 0 12px 32px rgba(3,7,18,0.25);
+        transform: translateY(-2px);
+        background: rgba(255,255,255,0.95);
     }
 
     .search-hero .btn-search {
-        padding: 10px 18px;
+        padding: 12px 28px;
         border-radius: 999px;
         background: linear-gradient(90deg,var(--tkp-primary-dark),var(--tkp-primary));
         color: #fff;
         border: none;
+        font-weight: 700;
+        cursor: pointer;
+        transition: var(--transition-smooth);
     }
 
-    /* Quick floating chat/cart button */
-    .fab-quick {
-        position: fixed;
-        right: 18px;
-        bottom: 24px;
-        z-index: 9999;
-        width: 56px;
-        height: 56px;
-        border-radius: 50%;
-        display: grid;
-        place-items: center;
-        background: linear-gradient(90deg,#7c3aed,#a78bfa);
-        box-shadow: 0 18px 40px rgba(124,58,237,0.18);
-        color: #fff;
-        border: none;
+    .search-hero .btn-search:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 28px rgba(30,144,255,0.25);
     }
 
     .heroSwiper {
         border-radius: 24px;
         height: 370px;
         box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+        overflow: hidden;
     }
 
     .hero-img {
@@ -139,13 +162,47 @@
         border-radius: 14px;
         background: linear-gradient(180deg, var(--tkp-primary-light), rgba(234,246,255,0.6));
         border: 1px solid rgba(96,165,250,0.10);
-        transition: transform 0.28s cubic-bezier(.2,.9,.3,1), box-shadow 0.28s;
+        transition: var(--transition-smooth);
         min-height: 170px;
         justify-content: center;
+        position: relative;
+        overflow: hidden;
     }
 
-    /* horizontal scroll on small screens */
-    .categories-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 6px; }
+    .category-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .category-card:hover::before {
+        opacity: 1;
+    }
+
+    .categories-scroll { 
+        overflow-x: auto; 
+        -webkit-overflow-scrolling: touch; 
+        padding-bottom: 6px;
+        scrollbar-width: thin;
+    }
+    .categories-scroll::-webkit-scrollbar {
+        height: 4px;
+    }
+    .categories-scroll::-webkit-scrollbar-track {
+        background: rgba(15,23,42,0.04);
+        border-radius: 10px;
+    }
+    .categories-scroll::-webkit-scrollbar-thumb {
+        background: rgba(96,165,250,0.3);
+        border-radius: 10px;
+    }
+    .categories-scroll::-webkit-scrollbar-thumb:hover {
+        background: rgba(96,165,250,0.5);
+    }
+
     .categories-scroll .row { flex-wrap: nowrap; }
     .categories-scroll .col { flex: 0 0 auto; width: 160px; }
 
@@ -155,9 +212,13 @@
         border-color: rgba(30,144,255,0.18);
     }
 
-    /* improve icon hover */
-    .category-card .category-icon-box { transition: transform 0.36s, box-shadow 0.36s; }
-    .category-card:hover .category-icon-box { transform: scale(1.06); box-shadow: 0 20px 40px rgba(96,165,250,0.14); }
+    .category-card .category-icon-box { 
+        transition: var(--transition-smooth); 
+    }
+    .category-card:hover .category-icon-box { 
+        transform: scale(1.08);
+        box-shadow: 0 20px 40px rgba(96,165,250,0.14); 
+    }
 
     .category-icon-box {
         width: 96px;
@@ -176,7 +237,7 @@
         height: 86%;
         object-fit: cover;
         border-radius: 50%;
-        transition: transform 0.45s ease;
+        transition: var(--transition-smooth);
         display: block;
     }
 
@@ -215,44 +276,57 @@
         background: linear-gradient(90deg, var(--tkp-primary-dark), var(--tkp-primary));
         border-radius: 2px;
         margin: 8px auto 0;
+        position: relative;
+        overflow: hidden;
     }
-
-    /* ===== Global polish: swiper buttons, section underline animation, product card base ===== */
-    .title-line { position: relative; overflow: hidden; }
+    
     .title-line::after {
         content: '';
-        position: absolute; inset: 0; left: -100%; background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
+        position: absolute;
+        inset: 0;
+        left: -100%;
+        background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
         transform: skewX(-18deg);
         animation: shine 2.6s linear infinite;
     }
+    
     @keyframes shine { to { left: 200%; } }
 
     .swiper-button-next, .swiper-button-prev {
-        width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.92); color: var(--tkp-primary-dark); box-shadow: 0 8px 22px rgba(6,10,26,0.12);
-        display: grid; place-items: center; --swiper-navigation-size: 16px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.92);
+        color: var(--tkp-primary-dark);
+        box-shadow: 0 8px 22px rgba(6,10,26,0.12);
+        display: grid;
+        place-items: center;
+        --swiper-navigation-size: 16px;
+        transition: var(--transition-smooth);
     }
-    .swiper-button-next::after, .swiper-button-prev::after { color: var(--tkp-primary-dark); font-size: 18px; }
 
-    /* product-card base style for non-featured items */
+    .swiper-button-next:hover, .swiper-button-prev:hover {
+        background: #fff;
+        transform: scale(1.08);
+        box-shadow: 0 12px 30px rgba(6,10,26,0.18);
+    }
+
+    .swiper-button-next::after, .swiper-button-prev::after { 
+        color: var(--tkp-primary-dark); 
+        font-size: 18px; 
+    }
+
+    /* product-card base style */
     .product-card {
         background: linear-gradient(180deg, #ffffff, #fbfdff);
         border-radius: 12px;
         overflow: hidden;
         border: 1px solid rgba(15,23,42,0.04);
+        transition: var(--transition-smooth);
     }
+
     .product-card .card-body a { color: var(--text-dark); }
     .product-card .fw-bold { color: var(--tkp-primary-dark); }
-
-    /* Modern card variants and microinteractions */
-    .modern-card { border-radius: 14px; overflow: hidden; position: relative; }
-    .modern-card .image-main { transition: transform 0.6s cubic-bezier(.2,.9,.3,1); will-change: transform; }
-    .modern-card:hover .image-main { transform: scale(1.06) translateY(-3px); }
-    .modern-card .img-gradient-overlay { background: linear-gradient(180deg, rgba(0,0,0,0.0) 20%, rgba(0,0,0,0.28) 100%); opacity: 0.9; }
-    .modern-card .card-overlay { position: absolute; left:50%; transform: translateX(-50%) translateY(12px); bottom: 14px; opacity:0; transition: all 0.28s; pointer-events:none; }
-    .modern-card:hover .card-overlay { opacity:1; transform: translateX(-50%) translateY(0); pointer-events:auto; }
-
-    .badge-top-left { position: absolute; top: 10px; left: 10px; z-index:13; }
-    .badge-top-right { position: absolute; top: 10px; right: 10px; z-index:13; }
 
     .price-base { font-size: 1rem; color: var(--tkp-primary-dark); }
     .price-sale { font-size: 1.05rem; font-weight: 800; }
@@ -260,20 +334,7 @@
 
     .product-title { font-size: 0.96rem; font-weight: 700; color: var(--text-dark); }
 
-
-    /* promo cards polish */
-    .promo-card { transition: transform 0.28s, box-shadow 0.28s; }
-    .promo-card:hover { transform: translateY(-6px); box-shadow: 0 28px 60px rgba(15,23,42,0.14); }
-
-    .promo-card .promo-content h2 { color: #fff; }
-    .promo-card .badge { font-weight:700; }
-
-    /* promo-section layout tweaks */
-    .promo-section .promo-card { min-height: 340px; display:flex; align-items:center; }
-    .promo-section .promo-content { max-width:56%; }
-    .promo-section .promo-img-wrapper, .promo-section .promo-img-wrappers { right: -8px; }
-
-    /* ===== FEATURED CARD: only product boxes use purple gradient ===== */
+    /* ===== FEATURED CARD ===== */
     .featured-card-wrap .product-card {
         background: linear-gradient(135deg, #7c3aed 8%, #a78bfa 100%);
         border-radius: 12px;
@@ -281,7 +342,7 @@
         border: none;
         color: #fff;
         box-shadow: 0 14px 36px rgba(124,58,237,0.12);
-        transition: transform 0.22s, box-shadow 0.22s;
+        transition: var(--transition-smooth);
     }
 
     .featured-card-wrap .product-card:hover {
@@ -303,8 +364,13 @@
 
     .featured-card-wrap { display: block; }
 
-    /* ===== Product hover overlay and image glow ===== */
-    .product-card .img-wrap { position: relative; border-radius: 10px 10px 0 0; overflow: hidden; }
+    /* Product hover overlay */
+    .product-card .img-wrap { 
+        position: relative; 
+        border-radius: 10px 10px 0 0; 
+        overflow: hidden; 
+    }
+
     .product-card .img-wrap::after {
         content: '';
         position: absolute;
@@ -335,13 +401,27 @@
         background: linear-gradient(90deg,#7c3aed,#a78bfa);
         border: none;
         color: #fff;
+        transition: var(--transition-smooth);
+    }
+
+    .product-card .add-to-cart-btn:hover {
+        transform: scale(1.05);
     }
 
     .product-card .card-body { background: transparent; }
 
-    /* ===== Staggered entrance animation for featured cards ===== */
-    @keyframes fadeUp { from {opacity:0; transform: translateY(10px);} to {opacity:1; transform: translateY(0);} }
-    .featured-card-wrap { opacity:0; transform: translateY(8px); animation: fadeUp 420ms ease forwards; }
+    /* ===== Staggered entrance animation ===== */
+    @keyframes fadeUp { 
+        from {opacity:0; transform: translateY(10px);} 
+        to {opacity:1; transform: translateY(0);} 
+    }
+
+    .featured-card-wrap { 
+        opacity:0; 
+        transform: translateY(8px); 
+        animation: fadeUp 420ms ease forwards; 
+    }
+
     .product-grid > .featured-card-wrap:nth-child(1) { animation-delay: 80ms; }
     .product-grid > .featured-card-wrap:nth-child(2) { animation-delay: 160ms; }
     .product-grid > .featured-card-wrap:nth-child(3) { animation-delay: 240ms; }
@@ -349,19 +429,48 @@
     .product-grid > .featured-card-wrap:nth-child(5) { animation-delay: 400ms; }
     .product-grid > .featured-card-wrap:nth-child(6) { animation-delay: 480ms; }
 
-    /* wishlist & rating styles */
-    .wishlist-btn { width:36px; height:36px; border-radius:50%; display:grid; place-items:center; padding:0; }
+    /* wishlist & rating */
+    .wishlist-btn { 
+        width:36px; 
+        height:36px; 
+        border-radius:50%; 
+        display:grid; 
+        place-items:center; 
+        padding:0;
+        background: rgba(255,255,255,0.9);
+        transition: var(--transition-smooth);
+        border: none;
+    }
+
+    .wishlist-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 10px 26px rgba(15,23,42,0.12);
+    }
+
     .wishlist-btn i { color: #e11d48; }
 
-    .rating-badge { font-weight:700; font-size:0.82rem; }
+    .rating-badge { 
+        font-weight:700; 
+        font-size:0.82rem; 
+    }
 
-    /* ===== PROMO BANNER WITH IMAGES ===== */
+    /* ===== PROMO BANNER (ENHANCED) ===== */
     .promo-card {
         border-radius: 28px;
         border: none;
         overflow: hidden;
         position: relative;
         min-height: 280px;
+        transition: var(--transition-smooth);
+    }
+
+    .promo-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1), transparent);
+        pointer-events: none;
+        z-index: 1;
     }
 
     .promo-content {
@@ -377,8 +486,9 @@
         width: 300px;
         height: auto;
         z-index: 1;
-        transition: transform 0.4s ease;
+        transition: var(--transition-smooth);
     }
+
     .promo-img-wrappers{
         position: absolute;
         bottom: 0;
@@ -386,11 +496,16 @@
         width: 200px;
         height: auto;
         z-index: 1;
-        transition: transform 0.4s ease;
+        transition: var(--transition-smooth);
+    }
+
+    .promo-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 28px 60px rgba(15,23,42,0.14);
     }
 
     .promo-card:hover .promo-img-wrapper {
-        transform: scale(1.1) rotate(-5deg);
+        transform: scale(1.12) rotate(-5deg);
     }
 
     .btn-promo {
@@ -401,7 +516,7 @@
         border-radius: 14px;
         text-decoration: none;
         display: inline-block;
-        transition: 0.3s;
+        transition: var(--transition-smooth);
         border: none;
     }
 
@@ -418,12 +533,16 @@
         gap: 20px;
     }
 
-    /* ===== Extra polish ===== */
-    /* Swiper pagination bullets */
+    /* Swiper pagination */
     .swiper-pagination-bullet {
-        width: 10px; height: 10px; opacity: 1; background: rgba(255,255,255,0.65);
-        border: 2px solid rgba(15,23,42,0.06); transition: transform 0.28s, background 0.28s, box-shadow 0.28s;
+        width: 10px;
+        height: 10px;
+        opacity: 1;
+        background: rgba(255,255,255,0.65);
+        border: 2px solid rgba(15,23,42,0.06);
+        transition: var(--transition-smooth);
     }
+
     .swiper-pagination-bullet-active {
         transform: scale(1.45);
         background: linear-gradient(90deg,var(--tkp-primary-dark),var(--tkp-primary));
@@ -431,37 +550,47 @@
         border-color: transparent;
     }
 
-    /* search glass effect */
-    .search-hero input[type="search"] {
-        backdrop-filter: blur(6px) saturate(120%);
-        background: rgba(255,255,255,0.72);
-        border: 1px solid rgba(15,23,42,0.04);
-        transition: box-shadow 0.22s, transform 0.18s;
-    }
-    .search-hero input[type="search"]:focus { box-shadow: 0 10px 30px rgba(6,10,26,0.12); transform: translateY(-1px); outline: none; }
-    .search-hero .btn-search { transition: transform 0.18s, box-shadow 0.18s; }
-    .search-hero .btn-search:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(30,64,175,0.12); }
-
-    /* wishlist hover */
-    .wishlist-btn { background: rgba(255,255,255,0.9); transition: transform 0.18s, box-shadow 0.18s; }
-    .wishlist-btn:hover { transform: scale(1.06); box-shadow: 0 10px 26px rgba(15,23,42,0.12); }
-
-    /* card overlay button polish */
-    .card-overlay .btn { border-radius: 999px; padding: 6px 12px; }
-
-    /* reduce spacing on small screens */
-    @media (max-width: 576px) {
-        .hero-overlay .hero-inner { padding: 22px 12px; }
-        .category-card { min-height: 150px; padding: 12px; }
-        .categories-scroll .col { width: 140px; }
+    /* ===== NEW CARD WRAP ===== */
+    .new-card-wrap { 
+        position: relative; 
     }
 
-    @media (min-width: 768px) {
-        .product-grid { grid-template-columns: repeat(4, 1fr); }
+    .new-badge { 
+        background: linear-gradient(90deg,#7c3aed,#a78bfa); 
+        color: #fff; 
+        font-weight:700; 
+        padding:6px 10px; 
+        border-radius:999px; 
+        font-size:0.78rem; 
+        position: absolute; 
+        right: 12px; 
+        bottom: 12px; 
+        z-index:9; 
+        box-shadow: 0 8px 20px rgba(124,58,237,0.12); 
     }
 
-    @media (min-width: 1200px) {
-        .product-grid { grid-template-columns: repeat(5, 1fr); }
+    .new-card-wrap .product-card { 
+        border: none; 
+        box-shadow: 0 12px 30px rgba(6,10,26,0.06); 
+        background: linear-gradient(180deg,#ffffff,#f7fbff); 
+        border-radius:14px; 
+        transition: var(--transition-smooth);
+    }
+
+    .new-card-wrap .product-card .card-body { 
+        padding: 14px; 
+    }
+
+    .new-card-wrap .badge.bg-danger { 
+        z-index: 12; 
+        position: absolute; 
+        top: 10px; 
+        left: 12px; 
+    }
+
+    .new-card-wrap .product-card:hover { 
+        transform: translateY(-8px); 
+        box-shadow: 0 26px 56px rgba(6,10,26,0.12); 
     }
 
     .btn-see-all {
@@ -469,28 +598,361 @@
         font-weight: 700;
         text-decoration: none;
         font-size: 15px;
+        transition: var(--transition-smooth);
     }
 
-    /* ===== NEW SECTION (Baru di Katalog) ===== */
-    .new-section .section-sub {
-        display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    .btn-see-all:hover {
+        color: var(--tkp-primary-dark);
+        transform: translateX(4px);
     }
 
-    .filter-chips { display:flex; gap:8px; align-items:center; }
-    .filter-chips .chip { padding:6px 12px; border-radius:999px; background: rgba(15,23,42,0.04); color: var(--text-dark); border:1px solid rgba(15,23,42,0.04); font-weight:600; cursor:pointer; }
-    .filter-chips .chip.active { background: linear-gradient(90deg,var(--tkp-primary-dark),var(--tkp-primary)); color:#fff; box-shadow:0 10px 28px rgba(96,165,250,0.12); }
+    /* ===== TRUST SECTION (NEW) ===== */
+    .trust-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 28px;
+        padding: 60px 40px;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
 
-    .new-card-wrap { position: relative; }
-        .new-badge { background: linear-gradient(90deg,#7c3aed,#a78bfa); color: #fff; font-weight:700; padding:6px 10px; border-radius:999px; font-size:0.78rem; position: absolute; right: 12px; bottom: 12px; z-index:9; box-shadow: 0 8px 20px rgba(124,58,237,0.12); }
+    .trust-section::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="rgba(255,255,255,0.08)"><circle cx="30" cy="30" r="30"/></g></g></svg>');
+        opacity: 0.6;
+    }
 
-    .new-card-wrap .product-card { border: none; box-shadow: 0 12px 30px rgba(6,10,26,0.06); background: linear-gradient(180deg,#ffffff,#f7fbff); border-radius:14px; }
-    .new-card-wrap .product-card .card-body { padding: 14px; }
+    .trust-content {
+        position: relative;
+        z-index: 2;
+    }
 
-    /* ensure discount badge remains visible above overlays */
-    .new-card-wrap .badge.bg-danger { z-index: 12; position: absolute; top: 10px; left: 12px; }
+    .trust-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+    }
 
-    /* subtle hover to lift the new cards */
-    .new-card-wrap .product-card:hover { transform: translateY(-8px); box-shadow: 0 26px 56px rgba(6,10,26,0.12); }
+    .trust-item {
+        text-align: center;
+        animation: fadeUp 0.6s ease forwards;
+        opacity: 0;
+    }
+
+    .trust-item:nth-child(1) { animation-delay: 0.1s; }
+    .trust-item:nth-child(2) { animation-delay: 0.2s; }
+    .trust-item:nth-child(3) { animation-delay: 0.3s; }
+    .trust-item:nth-child(4) { animation-delay: 0.4s; }
+
+    .trust-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 20px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 40px;
+        transition: var(--transition-smooth);
+    }
+
+    .trust-item:hover .trust-icon {
+        transform: scale(1.15) rotate(10deg);
+        background: rgba(255,255,255,0.25);
+    }
+
+    .trust-number {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .trust-text {
+        font-size: 0.95rem;
+        opacity: 0.95;
+    }
+
+    /* ===== FEATURED CATEGORY SECTION (NEW) ===== */
+    .featured-category-section {
+        margin-bottom: 60px;
+    }
+
+    .category-showcase {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+    }
+
+    .category-hero {
+        position: relative;
+        border-radius: 20px;
+        height: 300px;
+        overflow: hidden;
+        cursor: pointer;
+        group: 'cat';
+    }
+
+    .category-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5));
+        z-index: 2;
+        transition: var(--transition-smooth);
+    }
+
+    .category-hero:hover::before {
+        background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.35));
+    }
+
+    .category-hero-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition-smooth);
+    }
+
+    .category-hero:hover .category-hero-img {
+        transform: scale(1.08);
+    }
+
+    .category-hero-content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 30px;
+        z-index: 3;
+        color: #fff;
+    }
+
+    .category-hero-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .category-hero-subtitle {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-bottom: 16px;
+    }
+
+    .category-hero-btn {
+        background: #fff;
+        color: var(--text-dark);
+        padding: 10px 20px;
+        border-radius: 999px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-block;
+        width: fit-content;
+        transition: var(--transition-smooth);
+    }
+
+    .category-hero-btn:hover {
+        transform: translateX(4px);
+        box-shadow: 0 10px 24px rgba(0,0,0,0.2);
+    }
+
+    /* ===== STATS COUNTER (NEW) ===== */
+    .stats-section {
+        background: linear-gradient(180deg, #f8f9ff, #ffffff);
+        border-radius: 20px;
+        padding: 50px 30px;
+        margin: 60px 0;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 30px;
+        text-align: center;
+    }
+
+    .stat-card {
+        padding: 30px 20px;
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid rgba(15,23,42,0.06);
+        transition: var(--transition-smooth);
+        box-shadow: 0 4px 12px rgba(15,23,42,0.04);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 32px rgba(15,23,42,0.12);
+        border-color: var(--tkp-primary-light);
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+        background: linear-gradient(90deg, var(--tkp-primary-dark), var(--tkp-primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 4px;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        font-weight: 600;
+    }
+
+    /* ===== TESTIMONIAL SECTION (NEW) ===== */
+    .testimonial-section {
+        margin: 60px 0;
+    }
+
+    .testimonial-swiper {
+        padding: 40px 0;
+    }
+
+    .testimonial-card {
+        background: linear-gradient(180deg, #ffffff, #f7fbff);
+        border-radius: 16px;
+        padding: 30px;
+        border: 1px solid rgba(15,23,42,0.06);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 8px 20px rgba(15,23,42,0.04);
+        transition: var(--transition-smooth);
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(15,23,42,0.12);
+    }
+
+    .testimonial-stars {
+        color: #FFD700;
+        margin-bottom: 12px;
+    }
+
+    .testimonial-text {
+        flex-grow: 1;
+        margin-bottom: 20px;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: var(--text-dark);
+    }
+
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .testimonial-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--tkp-primary), var(--tkp-primary-dark));
+        display: grid;
+        place-items: center;
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .testimonial-name {
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .testimonial-role {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+
+    /* Responsive */
+    @media (max-width: 576px) {
+        .hero-overlay .hero-inner { 
+            padding: 22px 12px; 
+        }
+
+        .hero-overlay h1 {
+            font-size: 1.6rem;
+        }
+
+        .category-card { 
+            min-height: 150px; 
+            padding: 12px; 
+        }
+
+        .categories-scroll .col { 
+            width: 140px; 
+        }
+
+        .product-grid { 
+            gap: 14px; 
+        }
+
+        .promo-section .promo-card {
+            min-height: 280px;
+        }
+
+        .promo-content {
+            max-width: 100%;
+        }
+
+        .promo-img-wrapper,
+        .promo-img-wrappers {
+            display: none;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+        }
+
+        .trust-section {
+            padding: 40px 20px;
+        }
+
+        .trust-grid {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .trust-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 30px;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .category-showcase {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .product-grid { 
+            grid-template-columns: repeat(4, 1fr); 
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .product-grid { 
+            grid-template-columns: repeat(5, 1fr); 
+        }
+    }
 </style>
 
 <div class="container-fluid px-lg-5">
@@ -500,15 +962,15 @@
         <div class="swiper heroSwiper shadow">
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
-                    <img src="https://images.unsplash.com/photo-1452860606245-08befc0ff44b?q=80&w=2000&h=500&auto=format&fit=crop" class="hero-img">
+                    <img src="https://images.unsplash.com/photo-1452860606245-08befc0ff44b?q=80&w=2000&h=500&auto=format&fit=crop" class="hero-img" alt="Banner 1">
                 </div>
                 <div class="swiper-slide">
                     <a href="{{ route('catalog.index') }}">
-                        <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=2000&h=500&auto=format&fit=crop" class="hero-img">
+                        <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=2000&h=500&auto=format&fit=crop" class="hero-img" alt="Banner 2">
                     </a>
                 </div>
                <div class="swiper-slide">
-                    <img src="images/alat.png" class="hero-img">
+                    <img src="images/alat.png" class="hero-img" alt="Banner 3">
                 </div>
             </div>
             <div class="swiper-button-next"></div>
@@ -527,7 +989,7 @@
         </div>
     </section>
 
-    {{-- 2. KATEGORI PILIHAN (BULAT FULL) --}}
+    {{-- 2. KATEGORI PILIHAN --}}
     <section class="mb-5 pb-4 category-section section-block alt-bg">
         <div class="text-center mb-5">
             <h4 class="section-title mb-0">Kategori Pilihan</h4>
@@ -554,7 +1016,37 @@
         </div>
     </section>
 
-    {{-- 3. PRODUK UNGGULAN --}}
+    {{-- 3. STATS SECTION --}}
+    <section class="stats-section">
+        <div class="text-center mb-5">
+            <h4 class="section-title mb-0">Kepercayaan Jutaan Pelanggan</h4>
+            <div class="title-line"></div>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-number">50K+</div>
+                <div class="stat-label">Produk Tersedia</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-number">4.8/5</div>
+                <div class="stat-label">Rating Pelanggan</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🚚</div>
+                <div class="stat-number">24 Jam</div>
+                <div class="stat-label">Pengiriman Cepat</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💯</div>
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Aman & Terpercaya</div>
+            </div>
+        </div>
+    </section>
+
+    {{-- 4. PRODUK UNGGULAN --}}
     <section class="mb-5 py-5 featured-section section-block" style="margin: 0 -3rem;">
         <div class="container-fluid px-lg-5" style="padding:3rem;">
             <div class="d-flex justify-content-between align-items-end mb-4">
@@ -575,14 +1067,48 @@
         </div>
     </section>
 
-    {{-- 4. PROMO BANNER DENGAN GAMBAR --}}
+    {{-- 5. FEATURED CATEGORY SHOWCASE --}}
+    <section class="featured-category-section">
+        <div class="text-center mb-5">
+            <h4 class="section-title mb-0">Kategori Unggulan</h4>
+            <div class="title-line"></div>
+        </div>
+        <div class="category-showcase">
+            <div class="category-hero">
+                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=600&auto=format&fit=crop" class="category-hero-img" alt="Alat Tulis">
+                <div class="category-hero-content">
+                    <div class="category-hero-title">Alat Tulis</div>
+                    <div class="category-hero-subtitle">2,500+ Produk</div>
+                    <a href="#" class="category-hero-btn">Jelajahi</a>
+                </div>
+            </div>
+            <div class="category-hero">
+                <img src="https://images.unsplash.com/photo-1507842217343-583f7270bfba?q=80&w=600&auto=format&fit=crop" class="category-hero-img" alt="Buku & Kertas">
+                <div class="category-hero-content">
+                    <div class="category-hero-title">Buku & Kertas</div>
+                    <div class="category-hero-subtitle">1,800+ Produk</div>
+                    <a href="#" class="category-hero-btn">Jelajahi</a>
+                </div>
+            </div>
+            <div class="category-hero">
+                <img src="https://images.unsplash.com/photo-1609902726285-97c3997ef1dd?q=80&w=600&auto=format&fit=crop" class="category-hero-img" alt="Tas & Aksesori">
+                <div class="category-hero-content">
+                    <div class="category-hero-title">Tas & Aksesori</div>
+                    <div class="category-hero-subtitle">1,200+ Produk</div>
+                    <a href="#" class="category-hero-btn">Jelajahi</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- 6. PROMO BANNER --}}
     <section class="mb-5 py-4 promo-section section-block alt-bg">
         <div class="row g-4">
             {{-- Flash Sale --}}
             <div class="col-md-6">
                 <div class="promo-card p-5 h-100 text-white shadow" style="background: linear-gradient(135deg, #FFB700 0%, #FF8000 100%);">
                     <div class="promo-content">
-                        <span class="badge bg-white text-dark mb-3 px-3 shadow-sm">Flash Sale</span>
+                        <span class="badge bg-white text-dark mb-3 px-3 shadow-sm">⚡ Flash Sale</span>
                         <h2 class="fw-bold mb-3">Diskon Seru Hari Ini!</h2>
                         <p class="fs-5 opacity-90">Potongan harga hingga <span class="fw-bold">70%</span> tanpa minimum belanja.</p>
                         <div class="mt-4">
@@ -597,7 +1123,7 @@
             <div class="col-md-6">
                 <div class="promo-card p-5 h-100 text-white shadow" style="background: linear-gradient(135deg, #3B6181 0%, #5a8bb5 100%);">
                     <div class="promo-content">
-                        <span class="badge bg-white text-dark mb-3 px-3 shadow-sm">New User</span>
+                        <span class="badge bg-white text-dark mb-3 px-3 shadow-sm">🎉 New User</span>
                         <h2 class="fw-bold mb-3">Voucher Belanja</h2>
                         <p class="fs-5 opacity-90">Gunakan kode promo spesial:<br><strong class="fs-3 text-warning">BARUUNTUNG</strong></p>
                         <div class="mt-4">
@@ -610,15 +1136,110 @@
         </div>
     </section>
 
-    {{-- 5. PRODUK TERBARU --}}
+    {{-- 7. TRUST & BENEFITS SECTION --}}
+    <section class="trust-section">
+        <div class="trust-content">
+            <div class="text-center mb-5">
+                <h3 class="fw-bold mb-2" style="font-size: 2rem;">Mengapa Memilih Kami?</h3>
+                <p style="opacity: 0.95;">Kami berkomitmen memberikan pengalaman berbelanja terbaik untuk Anda</p>
+            </div>
+            <div class="trust-grid">
+                <div class="trust-item">
+                    <div class="trust-icon">✓</div>
+                    <div class="trust-number">100% Asli</div>
+                    <div class="trust-text">Semua produk dijamin asli dan bergaransi resmi</div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">🎁</div>
+                    <div class="trust-number">Gratis Ongkir</div>
+                    <div class="trust-text">Bebas ongkir untuk pembelian di atas Rp 50k</div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">↩️</div>
+                    <div class="trust-number">Mudah Retur</div>
+                    <div class="trust-text">Garansi uang kembali 100% jika tidak puas</div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">📞</div>
+                    <div class="trust-number">CS 24/7</div>
+                    <div class="trust-text">Tim support siap membantu kapan saja</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- 8. TESTIMONIAL SECTION --}}
+    <section class="testimonial-section">
+        <div class="text-center mb-5">
+            <h4 class="section-title mb-0">Testimoni Pelanggan</h4>
+            <div class="title-line"></div>
+        </div>
+        <div class="swiper testimonialSwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                        <p class="testimonial-text">"Produk berkualitas dan pengiriman cepat! Saya sangat puas dengan layanan ini. Pasti akan belanja lagi."</p>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">AN</div>
+                            <div>
+                                <div class="testimonial-name">Aisyah Nur</div>
+                                <div class="testimonial-role">Pembeli Terverifikasi</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                        <p class="testimonial-text">"Harga sangat kompetitif dan ada banyak pilihan. Customer service-nya juga responsif dan helpful!"</p>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">RM</div>
+                            <div>
+                                <div class="testimonial-name">Reza Maulana</div>
+                                <div class="testimonial-role">Pembeli Terverifikasi</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                        <p class="testimonial-text">"Belanja alat tulis jadi lebih mudah. Semua yang saya cari ada dan harganya masuk akal. Recommended!"</p>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">SD</div>
+                            <div>
+                                <div class="testimonial-name">Siti Dewi</div>
+                                <div class="testimonial-role">Pembeli Terverifikasi</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                        <p class="testimonial-text">"Sangat memuaskan! Packaging rapi, produk sesuai dengan foto, dan proses checkout sangat simpel."</p>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">AW</div>
+                            <div>
+                                <div class="testimonial-name">Ahmad Wijaya</div>
+                                <div class="testimonial-role">Pembeli Terverifikasi</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </section>
+
+    {{-- 9. PRODUK TERBARU --}}
     <section class="mb-5 new-section section-block">
         <div class="d-flex justify-content-between align-items-end mb-3">
             <div>
                 <h4 class="section-title mb-0">Baru di Katalog</h4>
                 <p class="text-muted small mt-2">Update stok terbaru setiap harinya.</p>
-                <div class="section-sub mt-3">
-                    
-                </div>
             </div>
             <a href="{{ route('catalog.index') }}" class="btn-see-all">Lihat Semua <i class="bi bi-arrow-right"></i></a>
         </div>
@@ -631,18 +1252,35 @@
             @endforeach
         </div>
     </section>
+    
 </div>
 
 {{-- SWIPER JS --}}
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Hero Swiper
         new Swiper(".heroSwiper", {
             loop: true,
             speed: 1000,
             autoplay: { delay: 5000, disableOnInteraction: false },
-            pagination: { el: ".swiper-pagination", clickable: true, dynamicBullets: true },
             navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+            effect: 'fade',
+            fadeEffect: { crossFade: true }
+        });
+
+        // Testimonial Swiper
+        new Swiper(".testimonialSwiper", {
+            loop: true,
+            speed: 500,
+            autoplay: { delay: 6000, disableOnInteraction: false },
+            slidesPerView: 1,
+            spaceBetween: 20,
+            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+            breakpoints: {
+                768: { slidesPerView: 2 },
+                1200: { slidesPerView: 3 }
+            }
         });
     });
 </script>

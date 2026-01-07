@@ -74,7 +74,7 @@ public function success(Order $order, MidtransService $midtransService)
             $order->payment?->update(['status' => 'pending']);
         } else {
             // Payment successful -> complete the order
-            $order->update(['status' => 'completed', 'payment_status' => 'paid']);
+            $order->update(['status' => 'processing', 'payment_status' => 'paid']);
             $order->payment?->update([
                 'status' => 'success',
                 'midtrans_transaction_id' => $status->transaction_id ?? null,
@@ -83,7 +83,7 @@ public function success(Order $order, MidtransService $midtransService)
             event(new OrderPaidEvent($order));
         }
     } elseif ($transactionStatus === 'settlement') {
-        $order->update(['status' => 'completed', 'payment_status' => 'paid']);
+        $order->update(['status' => 'processing', 'payment_status' => 'paid']);
         $order->payment?->update([
             'status' => 'success',
             'midtrans_transaction_id' => $status->transaction_id ?? null,

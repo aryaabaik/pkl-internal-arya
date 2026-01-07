@@ -31,17 +31,31 @@ class WishlistController extends Controller
      * - Jika user SUDAH like -> Hapus (Unlike/Detach)
      * - Jika user BELUM like -> Tambah (Like/Attach)
      */
- public function toggle(Product $product)
+public function toggle(Product $product)
 {
     $user = auth()->user();
+    $exists = $user->wishlistProducts()->where('product_id', $product->id)->exists();
 
-    if ($user->wishlistProducts()->where('product_id', $product->id)->exists()) {
+    if ($exists) {
         $user->wishlistProducts()->detach($product->id);
-        return back()->with('success', 'Dihapus dari wishlist');
+        $status = 'removed';
+        $message = 'Dihapus dari wishlist';
+    } else {
+        $user->wishlistProducts()->attach($product->id);
+        $status = 'added';
+        $message = 'Ditambahkan ke wishlist ❤️';
     }
 
-    $user->wishlistProducts()->attach($product->id);
-    return back()->with('success', 'Ditambahkan ke wishlist ❤️');
+    // Jika permintaan dari AJAX (JavaScript fetch)
+    if (request()->ajax() || request()->wantsJson()) {
+        return response()->json([
+            'status' => $status,
+            'message' => $message
+        ]);
+    }
+
+    // Jika klik biasa (fallback)
+    return back()->with('success', $message);
 }
 
 }
