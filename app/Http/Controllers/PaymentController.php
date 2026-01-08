@@ -116,20 +116,20 @@ public function pending(Order $order) // Tambahkan parameter Order $order
 public function callback(Request $request, MidtransService $midtransService)
 {
     try {
-        // Ambil data dari request Midtrans
         $notification = $request->all();
-        $orderNumber = $notification['order_id'];
+        $midtransOrderId = $notification['order_id']; // Contoh: "INV-123-1704712345"
 
-        // Cari order berdasarkan order_number
+        // Ambil bagian depan sebelum tanda "-" pertama
+        $orderNumber = explode('-', $midtransOrderId)[0]; // Hasil: "INV-123"
+
         $order = Order::where('order_number', $orderNumber)->first();
 
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
 
-        // Gunakan checkStatus dari service kamu untuk validasi keamanan (Signature Key)
-        $status = $midtransService->checkStatus($orderNumber);
-        
+        // Gunakan $midtransOrderId (yang ada timestamp-nya) untuk cek status ke API Midtrans
+        $status = $midtransService->checkStatus($midtransOrderId);
         $transactionStatus = $status->transaction_status;
         $fraudStatus = $status->fraud_status;
 
@@ -147,12 +147,8 @@ public function callback(Request $request, MidtransService $midtransService)
             $order->update(['status' => 'cancelled']);
         }
 
-        return response()->json(['message' => 'OK']);
-
+       return response()->json(['message' => 'OK']);
     } catch (\Exception $e) {
-                    if (!empty($midtransOrderId)) {
-                        $order->update(['midtrans_order_id' => $midtransOrderId]);
-                    }
         return response()->json(['message' => $e->getMessage()], 500);
     }
 }

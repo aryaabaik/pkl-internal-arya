@@ -146,123 +146,157 @@
         object-fit: cover;
     }
 
-    /* ===== CATEGORY: REFRESHED CARD STYLE ===== */
-    .category-wrapper {
-        text-decoration: none !important;
-        display: block;
-        width: 100%;
-    }
+/* ===========================
+    KATEGORI PILIHAN (GLOWING PURPLE)
+=========================== */
+:root {
+    --glow-purple: #a855f7;
+    --dark-purple: #6b21a8;
+    --bg-purple: #faf5ff;
+}
 
+.categories-scroll {
+    overflow-x: auto;
+    padding: 20px 10px;
+    scrollbar-width: none; /* Sembunyikan scrollbar Firefox */
+}
+
+.categories-scroll::-webkit-scrollbar {
+    display: none; /* Sembunyikan scrollbar Chrome/Safari */
+}
+
+.categories-scroll .row {
+    flex-wrap: nowrap;
+    margin-bottom: 10px;
+}
+
+.categories-scroll .col {
+    flex: 0 0 auto;
+    width: 210px; /* Diperbesar sedikit dari 190px */
+}
+
+.category-wrapper {
+    text-decoration: none !important;
+    display: block;
+}
+
+.category-card {
+    background: #ffffff;
+    border-radius: 24px; /* Lebih bulat */
+    padding: 30px 20px;
+    min-height: 240px; /* Lebih tinggi & luas */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    border: 1px solid rgba(168, 85, 247, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efek Background Gradient Halus saat Hover */
+.category-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(180deg, rgba(168, 85, 247, 0.05) 0%, #fff 100%);
+    z-index: 0;
+}
+
+.category-card:hover {
+    transform: translateY(-12px);
+    border-color: var(--glow-purple);
+    box-shadow: 0 20px 40px rgba(168, 85, 247, 0.25);
+}
+
+.category-icon-box {
+    width: 120px; /* Diperbesar */
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f3e8ff, #ffffff);
+    display: grid;
+    place-items: center;
+    position: relative;
+    z-index: 1;
+    border: 4px solid #fff;
+    box-shadow: 0 8px 20px rgba(168, 85, 247, 0.15);
+    transition: all 0.4s ease;
+}
+
+.category-card:hover .category-icon-box {
+    transform: rotate(5deg) scale(1.1);
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+    background: linear-gradient(135deg, var(--glow-purple), var(--dark-purple));
+}
+
+.category-icon-box img {
+    width: 85%;
+    height: 85%;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: all 0.4s ease;
+}
+
+.category-card:hover .category-icon-box img {
+    filter: brightness(1.1);
+}
+
+.category-name {
+   .category-name {
+    font-size: 17px;            /* ⬅️ lebih gede */
+    font-weight: 900;           /* ⬅️ super tebel */
+    color: var(--tkp-primary-dark);
+    text-align: center;
+    line-height: 1.25;
+    letter-spacing: -0.2px;
+
+    /* tetap rapi walau panjang */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;      /* max 2 baris */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    min-height: 44px;           /* jaga tinggi card konsisten */
+}
+}
+
+.category-card:hover .category-name {
+    color: var(--dark-purple);
+}
+
+.category-count {
+    position: relative;
+    z-index: 1;
+    font-size: 14px;
+    background: rgba(168, 85, 247, 0.1);
+    color: var(--dark-purple);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.category-card:hover .category-count {
+    background: var(--glow-purple);
+    color: #fff;
+}
+
+/* Responsive Optimization */
+@media (max-width: 576px) {
+    .categories-scroll .col {
+        width: 180px;
+    }
     .category-card {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        padding: 18px 14px;
-        border-radius: 14px;
-        background: linear-gradient(180deg, var(--tkp-primary-light), rgba(234,246,255,0.6));
-        border: 1px solid rgba(96,165,250,0.10);
-        transition: var(--transition-smooth);
-        min-height: 170px;
-        justify-content: center;
-        position: relative;
-        overflow: hidden;
+        min-height: 210px;
+        padding: 20px 15px;
     }
-
-    .category-card::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent);
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-
-    .category-card:hover::before {
-        opacity: 1;
-    }
-
-    .categories-scroll { 
-        overflow-x: auto; 
-        -webkit-overflow-scrolling: touch; 
-        padding-bottom: 6px;
-        scrollbar-width: thin;
-    }
-    .categories-scroll::-webkit-scrollbar {
-        height: 4px;
-    }
-    .categories-scroll::-webkit-scrollbar-track {
-        background: rgba(15,23,42,0.04);
-        border-radius: 10px;
-    }
-    .categories-scroll::-webkit-scrollbar-thumb {
-        background: rgba(96,165,250,0.3);
-        border-radius: 10px;
-    }
-    .categories-scroll::-webkit-scrollbar-thumb:hover {
-        background: rgba(96,165,250,0.5);
-    }
-
-    .categories-scroll .row { flex-wrap: nowrap; }
-    .categories-scroll .col { flex: 0 0 auto; width: 160px; }
-
-    .category-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 18px 40px rgba(96,165,250,0.18);
-        border-color: rgba(30,144,255,0.18);
-    }
-
-    .category-card .category-icon-box { 
-        transition: var(--transition-smooth); 
-    }
-    .category-card:hover .category-icon-box { 
-        transform: scale(1.08);
-        box-shadow: 0 20px 40px rgba(96,165,250,0.14); 
-    }
-
     .category-icon-box {
-        width: 96px;
-        height: 96px;
-        border-radius: 50%;
-        overflow: hidden;
-        display: grid;
-        place-items: center;
-        background: linear-gradient(135deg, rgba(96,165,250,0.12), rgba(96,165,250,0.06));
-        box-shadow: 0 8px 20px rgba(96,165,250,0.08);
-        border: 2px solid rgba(255,255,255,0.6);
+        width: 100px;
+        height: 100px;
     }
-
-    .category-icon-box img {
-        width: 86%;
-        height: 86%;
-        object-fit: cover;
-        border-radius: 50%;
-        transition: var(--transition-smooth);
-        display: block;
-    }
-
-    .category-card:hover .category-icon-box img {
-        transform: scale(1.12) rotate(-3deg);
-    }
-
-    .meta {
-        text-align: center;
-    }
-
-    .category-name {
-        font-size: 14px;
-        font-weight: 800;
-        color: var(--tkp-primary-dark);
-        margin-top: 6px;
-    }
-
-    .category-count {
-        font-size: 12px;
-        color: rgba(30,64,175,0.85);
-        background: transparent;
-        margin-top: 4px;
-    }
-
+}
     /* ===== SECTION TITLES ===== */
     .section-title {
         font-weight: 800;
@@ -990,31 +1024,36 @@
     </section>
 
     {{-- 2. KATEGORI PILIHAN --}}
-    <section class="mb-5 pb-4 category-section section-block alt-bg">
+   <section class="mb-5 py-5 section-block" style="background-color: var(--bg-purple);">
+    <div class="container-fluid">
         <div class="text-center mb-5">
-            <h4 class="section-title mb-0">Kategori Pilihan</h4>
-            <div class="title-line"></div>
+            <h4 class="section-title mb-0" style="color: var(--dark-purple); font-weight: 850; letter-spacing: -0.5px;">Kategori Pilihan</h4>
+            <div class="title-line" style="background: linear-gradient(90deg, transparent, var(--glow-purple), transparent); height: 4px; width: 80px; margin: 15px auto; border-radius: 10px;"></div>
         </div>
+
         <div class="categories-scroll">
-            <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-5 justify-content-center text-center">
-            @foreach($categories as $category)
-                <div class="col">
-                    <a href="{{ route('catalog.index', ['category' => $category->slug]) }}" class="category-wrapper">
-                        <div class="category-card">
-                            <div class="category-icon-box">
-                                <img src="{{ $category->image_url }}" alt="{{ $category->name }}">
+            <div class="row g-4 justify-content-start justify-content-md-center text-center">
+                @foreach($categories as $category)
+                    <div class="col">
+                        <a href="{{ route('catalog.index', ['category' => $category->slug]) }}" class="category-wrapper">
+                            <div class="category-card">
+                                <div class="category-icon-box">
+                                    <img src="{{ $category->image_url }}" alt="{{ $category->name }}">
+                                </div>
+                                <div class="category-name text-truncate">
+                                    {{ $category->name }}
+                                </div>
+                                <div class="category-count">
+                                    {{ $category->products_count }} Item
+                                </div>
                             </div>
-                            <div class="meta w-100">
-                                <div class="category-name text-truncate">{{ $category->name }}</div>
-                                <div class="category-count">{{ $category->products_count }} Item</div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            @endforeach
+                        </a>
+                    </div>
+                @endforeach
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     {{-- 3. STATS SECTION --}}
     <section class="stats-section">

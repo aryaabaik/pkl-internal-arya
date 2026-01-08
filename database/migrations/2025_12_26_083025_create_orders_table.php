@@ -37,6 +37,7 @@ return new class extends Migration
             $table->index('order_number');
 
             $table->string('snap_token')->nullable();
+            $table->string('midtrans_order_id')->nullable();
 
 
         });
