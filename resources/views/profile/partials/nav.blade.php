@@ -123,13 +123,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255,255,255,.9);
-  padding: 6px 14px 6px 6px;
-  border-radius: 999px;
-  box-shadow: 0 10px 25px rgba(0,0,0,.08);
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
   cursor: pointer;
   transition: .3s;
 }
+
 
 .zeus-profile:hover {
   transform: translateY(-2px);
@@ -152,13 +153,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255,255,255,.85);
-  padding: 6px 14px 6px 6px;
-  border-radius: 999px;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
   text-decoration: none;
-  box-shadow: 0 10px 25px rgba(0,0,0,.08);
+  box-shadow: none;
   transition: .3s;
 }
+
 
 .zeus-profile-trigger:hover {
   transform: translateY(-2px);
@@ -227,78 +229,101 @@
   <div class="zeus-container">
 
     <!-- LOGO -->
-    <a href="#" class="zeus-brand">
+    <a href="{{ route('home') }}" class="zeus-brand">
       <img src="images/8.jpg" alt="Logo">
       <span>Toko<span>Online</span></span>
     </a>
 
     <!-- MENU -->
-    <ul class="zeus-menu">
-      <li><a href="#" class="active">Beranda</a></li>
-      <li><a href="#">Katalog</a></li>
-      <li><a href="#">Terbaru</a></li>
-    </ul>
+   <ul class="zeus-menu">
+  <li>
+    <a href="{{ route('home') }}"
+       class="{{ request()->routeIs('home') ? 'active' : '' }}">
+      Beranda
+    </a>
+  </li>
+
+  <li>
+    <a href="{{ route('catalog.index') }}"
+       class="{{ request()->routeIs('catalog.*') ? 'active' : '' }}">
+      Katalog
+    </a>
+  </li>
+
+  <li>
+    <a href="{{ route('orders.index') }}"
+       class="{{ request()->routeIs('orders.*') ? 'active' : '' }}">
+      Pesanan Saya
+    </a>
+  </li>
+</ul>
+
 
     <!-- ACTION -->
-    <div class="zeus-actions">
-      <button class="zeus-icon"><i class="bi bi-heart"></i></button>
-      <button class="zeus-icon"><i class="bi bi-bag"></i></button>
+ <div class="zeus-actions">
+  <button class="zeus-icon"><i class="bi bi-heart"></i></button>
+  <button class="zeus-icon"><i class="bi bi-bag"></i></button>
 
-     <div class="zeus-profile dropdown">
-  <a href="#" class="zeus-profile-trigger" data-bs-toggle="dropdown" aria-expanded="false">
-    <img
-      src="{{ auth()->user()->avatar_url 
-        ?? 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=7c3aed&color=fff' }}"
-      alt="Avatar">
-    <span class="user-name">
-      {{ auth()->user()->name }}
-    </span>
-    <i class="bi bi-chevron-down"></i>
-  </a>
-
-  <ul class="dropdown-menu zeus-dropdown dropdown-menu-end">
-    <li class="dropdown-header">
-      <strong>{{ auth()->user()->name }}</strong>
-      <small>{{ auth()->user()->email }}</small>
-    </li>
-
-    <li><hr class="dropdown-divider"></li>
-
-    <li>
-      <a class="dropdown-item" href="{{ route('profile.edit') }}">
-        <i class="bi bi-person me-2"></i> Akun Saya
+  @auth
+    <div class="zeus-profile dropdown">
+      <a href="#" class="zeus-profile-trigger" data-bs-toggle="dropdown" aria-expanded="false">
+        <img
+          src="{{ auth()->user()->avatar_url 
+            ?? 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=7c3aed&color=fff' }}"
+          alt="Avatar">
+        <span class="user-name">
+          {{ auth()->user()->name }}
+        </span>
+        <i class="bi bi-chevron-down"></i>
       </a>
-    </li>
 
-    <li>
-      <a class="dropdown-item" href="{{ route('orders.index') }}">
-        <i class="bi bi-box me-2"></i> Pesanan Saya
-      </a>
-    </li>
+      <ul class="dropdown-menu zeus-dropdown dropdown-menu-end">
+        <li class="dropdown-header">
+          <strong>{{ auth()->user()->name }}</strong>
+          <small>{{ auth()->user()->email }}</small>
+        </li>
 
-    @if(auth()->user()->isAdmin())
-      <li><hr class="dropdown-divider"></li>
-      <li>
-        <a class="dropdown-item text-primary fw-bold" href="{{ route('admin.dashboard') }}">
-          <i class="bi bi-speedometer2 me-2"></i> Admin Panel
-        </a>
-      </li>
-    @endif
+        <li><hr class="dropdown-divider"></li>
 
-    <li><hr class="dropdown-divider"></li>
+        <li>
+          <a class="dropdown-item" href="{{ route('profile.edit') }}">
+            <i class="bi bi-person me-2"></i> Akun Saya
+          </a>
+        </li>
 
-    <li>
-      <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit" class="dropdown-item text-danger">
-          <i class="bi bi-box-arrow-right me-2"></i> Keluar
-        </button>
-      </form>
-    </li>
-  </ul>
-</div>
+        <li>
+          <a class="dropdown-item" href="{{ route('orders.index') }}">
+            <i class="bi bi-box me-2"></i> Pesanan Saya
+          </a>
+        </li>
 
+        @if(auth()->user()->isAdmin())
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <a class="dropdown-item text-primary fw-bold" href="{{ route('admin.dashboard') }}">
+              <i class="bi bi-speedometer2 me-2"></i> Admin Panel
+            </a>
+          </li>
+        @endif
+
+        <li><hr class="dropdown-divider"></li>
+
+        <li>
+          <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="dropdown-item text-danger">
+              <i class="bi bi-box-arrow-right me-2"></i> Keluar
+            </button>
+          </form>
+        </li>
+      </ul>
     </div>
+  @else
+    <a href="{{ route('login') }}" class="zeus-icon" title="Login">
+        <i class="bi bi-person-circle"></i>
+    </a>
+  @endauth
+</div>
 
   </div>
 </nav>

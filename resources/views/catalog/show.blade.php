@@ -1,362 +1,293 @@
 @extends('layouts.app')
 
-@section('title', $product->name)
+@section('title', 'Katalog Sepatu')
 
 @push('styles')
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
 <style>
     :root {
-        /* Purple Gradient Theme */
-        --primary-purple: #7c3aed;
-        --secondary-purple: #f5f3ff;
-        --accent-purple: #c4b5fd;
-        --text-main: #1e1b4b;
-        --text-light: #6b7280;
-        /* Gradient Button & Elements */
-        --grad-purple: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        --primary: #9333ea;
+        --primary-light: #c084fc;
+        --primary-dark: #7c3aed;
+        --primary-glow: rgba(147, 51, 234, 0.4);
+        --bg: linear-gradient(135deg, #f3e8ff, #fae8ff);
+        --card-bg: rgba(255, 255, 255, 0.65);
+        --text: #581c87;
+        --text-muted: #a78bfa;
+        --border: rgba(147, 51, 234, 0.25);
+        --shadow: 0 12px 40px rgba(147, 51, 234, 0.15);
+        --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     body {
-        background-color: #f8fafc;
+        background: var(--bg);
         font-family: 'Plus Jakarta Sans', sans-serif;
-        color: var(--text-main);
+        color: var(--text);
     }
 
-    /* Breadcrumb Styles */
-    .breadcrumb-wrapper { padding: 20px 0; }
-    .breadcrumb-item a { color: var(--text-light); text-decoration: none; font-weight: 500; transition: 0.3s; }
-    .breadcrumb-item a:hover { color: var(--primary-purple); }
-
-    /* Image Section */
-    .product-gallery-card {
-        background: white;
-        border-radius: 32px;
-        padding: 24px;
-        border: 1px solid #f1f5f9;
-        position: sticky;
-        top: 100px;
-        box-shadow: 0 10px 40px rgba(124, 58, 237, 0.05);
-    }
-
-    .main-img-holder {
-        background: #fdfdff;
-        border-radius: 24px;
-        height: 500px;
+    /* Hero Section */
+    .hero-catalog {
+        height: 70vh;
+        min-height: 500px;
+        background: linear-gradient(rgba(147, 51, 234, 0.3), rgba(147, 51, 234, 0.5)), url('https://images.unsplash.com/photo-1605348532760-6753d2c43387?q=80&w=1920') center/cover no-repeat;
         display: flex;
         align-items: center;
         justify-content: center;
-        overflow: hidden;
-        margin-bottom: 20px;
+        text-align: center;
+        color: white;
+        border-radius: 0 0 40px 40px;
         position: relative;
+        overflow: hidden;
     }
 
-    #main-image {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    .hero-catalog::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(147,51,234,0.2), transparent);
     }
 
-    .main-img-holder:hover #main-image { transform: scale(1.08); }
-
-    .thumb-item {
-        width: 80px;
-        height: 80px;
-        border-radius: 16px;
-        cursor: pointer;
-        border: 2px solid transparent;
-        transition: 0.3s;
-        object-fit: cover;
-    }
-
-    .thumb-item.active { border-color: var(--primary-purple); box-shadow: 0 0 0 4px var(--secondary-purple); }
-
-    /* Info Section */
-    .product-details { padding-left: 20px; }
-
-    .brand-tag {
-        color: var(--primary-purple);
-        background: var(--secondary-purple);
-        padding: 6px 16px;
-        border-radius: 100px;
-        font-weight: 700;
-        font-size: 0.85rem;
-        display: inline-block;
-        margin-bottom: 12px;
-    }
-
-    .product-title {
-        font-size: 2.8rem;
+    .hero-title {
+        font-size: 4.5rem;
         font-weight: 800;
-        letter-spacing: -0.02em;
-        line-height: 1.2;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        z-index: 2;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        font-weight: 600;
+        opacity: 0.9;
+        z-index: 2;
+    }
+
+    /* Filter Sidebar */
+    .filter-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(24px);
+        border: 1px solid var(--border);
+        border-radius: 28px;
+        padding: 32px;
+        box-shadow: var(--shadow);
+        height: fit-content;
+        position: sticky;
+        top: 100px;
+    }
+
+    .filter-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 20px;
+    }
+
+    /* Product Card */
+    .shoe-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .shoe-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 25px 60px var(--primary-glow);
+    }
+
+    .shoe-image-wrapper {
+        height: 300px;
+        overflow: hidden;
+        position: relative;
+        background: rgba(255,255,255,0.4);
+    }
+
+    .shoe-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition);
+    }
+
+    .shoe-card:hover .shoe-image {
+        transform: scale(1.15);
+    }
+
+    .discount-badge {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        box-shadow: 0 8px 20px var(--primary-glow);
+    }
+
+    .card-body {
+        padding: 24px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .shoe-brand {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+    }
+
+    .shoe-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        line-height: 1.3;
     }
 
     .price-wrapper {
-        background: white;
-        padding: 30px;
-        border-radius: 24px;
-        border: 1px solid #f1f5f9;
-        box-shadow: 0 10px 30px rgba(124, 58, 237, 0.06);
-        margin: 24px 0;
+        margin-top: auto;
     }
 
-    .current-price { font-size: 2.5rem; font-weight: 800; color: var(--primary-purple); }
-    .old-price { text-decoration: line-through; color: var(--text-light); font-size: 1.1rem; }
-
-    /* Controls */
-    .qty-control {
-        background: var(--secondary-purple);
-        border-radius: 100px;
-        padding: 6px;
-        display: inline-flex;
-        align-items: center;
+    .current-price {
+        font-size: 1.6rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 
-    .qty-btn {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        border: none;
-        background: white;
-        color: var(--primary-purple);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        transition: 0.2s;
+    .old-price {
+        font-size: 1.1rem;
+        text-decoration: line-through;
+        color: var(--text-muted);
+        margin-left: 12px;
     }
-
-    .qty-input {
-        width: 60px;
-        border: none;
-        background: transparent;
-        text-align: center;
-        font-weight: 700;
-        font-size: 1.2rem;
-        color: var(--primary-purple);
-    }
-
-    /* Buttons */
-    .btn-cart-premium {
-        background: var(--grad-purple);
-        color: white;
-        border: none;
-        padding: 18px 40px;
-        border-radius: 100px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        transition: 0.3s;
-        box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
-    }
-
-    .btn-cart-premium:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 35px rgba(124, 58, 237, 0.4);
-        color: white;
-    }
-
-    /* New Purple Wishlist Style */
-    .btn-wishlist-premium {
-        border-radius: 100px;
-        padding: 12px 24px;
-        font-weight: 700;
-        transition: 0.3s;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        border: 2px solid var(--primary-purple);
-    }
-
-    .btn-wishlist-active {
-        background: var(--secondary-purple);
-        color: var(--primary-purple);
-        border-color: var(--primary-purple);
-    }
-
-    .btn-wishlist-inactive {
-        background: transparent;
-        color: var(--primary-purple);
-        border-color: var(--primary-purple);
-    }
-
-    .btn-wishlist-premium:hover {
-        background: var(--primary-purple);
-        color: white !important;
-    }
-
-    /* Trust Badges */
-    .trust-badge-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-        margin-top: 30px;
-    }
-
-    .trust-card {
-        background: #fff;
-        padding: 16px;
-        border-radius: 16px;
-        border: 1px solid #f1f5f9;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .trust-card i { font-size: 1.5rem; color: var(--primary-purple); }
-    .trust-card span { font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
 </style>
 @endpush
 
 @section('content')
-<div class="container pb-5">
-    <div class="breadcrumb-wrapper">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('catalog.index') }}">Stationery</a></li>
-                <li class="breadcrumb-item active">{{ $product->category->name }}</li>
-            </ol>
-        </nav>
+<!-- Hero -->
+<div class="hero-catalog">
+    <div class="position-relative z-2">
+        <h1 class="hero-title">Koleksi Sepatu Premium</h1>
+        <p class="hero-subtitle">Temukan style terbaik untuk setiap langkahmu</p>
     </div>
+</div>
+
+<div class="container py-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-transparent p-0">
+            <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-muted">Home</a></li>
+            <li class="breadcrumb-item active text-primary fw-bold">Katalog Sepatu</li>
+        </ol>
+    </nav>
 
     <div class="row g-5">
-        <div class="col-lg-6">
-            <div class="product-gallery-card">
-                <div class="main-img-holder">
-                    @if($product->has_discount)
-                        <div class="position-absolute top-0 start-0 m-4" style="z-index: 10;">
-                            {{-- Warna badge promo disamakan ke ungu aksen --}}
-                            <span class="badge rounded-pill px-3 py-2 fw-bold shadow-sm" style="background: var(--primary-purple); color: white;">PROMO {{ $product->discount_percentage }}%</span>
-                        </div>
-                    @endif
-                    <img src="{{ $product->image_url }}" id="main-image" alt="{{ $product->name }}">
-                </div>
+        <!-- Sidebar Filter -->
+        <div class="col-lg-3">
+            <div class="filter-card">
+                <h3 class="filter-title">Filter Produk</h3>
                 
-                <div class="d-flex gap-3 justify-content-center overflow-auto py-2">
-                    <img src="{{ $product->image_url }}" class="thumb-item active" onclick="changeImage(this)">
-                    @foreach($product->images as $image)
-                        <img src="{{ asset('storage/' . $image->image_path) }}" class="thumb-item" onclick="changeImage(this)">
-                    @endforeach
-                </div>
+                <form>
+                    <!-- Category -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3">Kategori</h5>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="sneakers">
+                            <label class="form-check-label" for="sneakers">Sneakers</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="running">
+                            <label class="form-check-label" for="running">Running</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="casual">
+                            <label class="form-check-label" for="casual">Casual</label>
+                        </div>
+                    </div>
+
+                    <!-- Price Range -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3">Harga</h5>
+                        <input type="range" class="form-range" min="0" max="5000000" step="100000">
+                        <div class="d-flex justify-content-between text-muted small">
+                            <span>Rp 0</span>
+                            <span>Rp 5.000.000</span>
+                        </div>
+                    </div>
+
+                    <!-- Size -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3">Ukuran</h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            @for($i = 38; $i <= 44; $i++)
+                                <button type="button" class="btn btn-outline-primary rounded-pill px-3 py-1">{{ $i }}</button>
+                            @endfor
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-add-cart w-100">
+                        Terapkan Filter
+                    </button>
+                </form>
             </div>
         </div>
 
-        <div class="col-lg-6">
-            <div class="product-details">
-                <span class="brand-tag"><i class="bi bi-patch-check-fill me-1"></i> Original Product</span>
-                <h1 class="product-title mb-3">{{ $product->name }}</h1>
-                
-                <div class="d-flex align-items-center gap-3 mb-4">
-                    <div class="d-flex" style="color: #ffc107;">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
-                    </div>
-                    <span class="text-muted small fw-bold">(4.8/5.0 - 120 Terjual)</span>
-                </div>
+        <!-- Product Grid -->
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <p class="text-muted mb-0">Menampilkan 1-12 dari 48 produk</p>
+                <select class="form-select w-auto" style="border-radius: 50px; padding: 12px 24px;">
+                    <option>Urutkan: Terbaru</option>
+                    <option>Harga Terendah</option>
+                    <option>Harga Tertinggi</option>
+                    <option>Terlaris</option>
+                </select>
+            </div>
 
-                <div class="price-wrapper">
-                    <div class="d-flex flex-column">
-                        @if($product->has_discount)
-                            <span class="old-price">{{ $product->formatted_original_price }}</span>
-                        @endif
-                        <span class="current-price">{{ $product->formatted_price }}</span>
-                    </div>
-                    
-                    <hr class="my-4 opacity-50">
-                    
-                    <div class="d-flex flex-column gap-3">
-                        {{-- Form Add To Cart --}}
-                        <form action="{{ route('cart.add') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <div class="d-flex flex-wrap align-items-center gap-3 mb-2">
-                                <div class="qty-control">
-                                    <button type="button" class="qty-btn" onclick="decrementQty()"><i class="bi bi-dash-lg"></i></button>
-                                    <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ $product->stock }}" class="qty-input">
-                                    <button type="button" class="qty-btn" onclick="incrementQty()"><i class="bi bi-plus-lg"></i></button>
+            <div class="row g-4">
+                @foreach($products as $product) <!-- asumsi $products dari controller -->
+                    <div class="col-md-6 col-xl-4">
+                        <a href="{{ route('product.show', $product->id) }}" class="text-decoration-none">
+                            <div class="shoe-card">
+                                <div class="shoe-image-wrapper position-relative">
+                                    @if($product->has_discount)
+                                        <span class="discount-badge">PROMO {{ $product->discount_percentage }}% OFF</span>
+                                    @endif
+                                    <img src="{{ $product->image_url }}" class="shoe-image" alt="{{ $product->name }}">
                                 </div>
-                                <button type="submit" class="btn btn-cart-premium flex-grow-1" {{ $product->stock == 0 ? 'disabled' : '' }}>
-                                    <i class="bi bi-bag-plus-fill fs-5"></i>
-                                    <span>{{ $product->stock == 0 ? 'Stok Habis' : 'Masukkan Keranjang' }}</span>
-                                </button>
+                                <div class="card-body">
+                                    <div class="shoe-brand">Nike • Original</div>
+                                    <h3 class="shoe-name">{{ $product->name }}</h3>
+                                    
+                                    <div class="price-wrapper d-flex align-items-center">
+                                        <div class="current-price">{{ $product->formatted_price }}</div>
+                                        @if($product->has_discount)
+                                            <del class="old-price">{{ $product->formatted_original_price }}</del>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
-                        </form>
-
-                        {{-- Form Wishlist (Purple Theme) --}}
-                        @auth
-                        <form action="{{ route('wishlist.toggle', $product->id) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-wishlist-premium {{ auth()->user()->hasInWishlist($product) ? 'btn-wishlist-active' : 'btn-wishlist-inactive' }}">
-                                <i class="bi {{ auth()->user()->hasInWishlist($product) ? 'bi-heart-fill' : 'bi-heart' }}"></i>
-                                {{ auth()->user()->hasInWishlist($product) ? 'Hapus dari Wishlist' : 'Simpan ke Wishlist' }}
-                            </button>
-                        </form>
-                        @else
-                        <a href="{{ route('login') }}" class="btn btn-wishlist-premium btn-wishlist-inactive">
-                            <i class="bi bi-heart"></i> Simpan ke Wishlist
                         </a>
-                        @endauth
                     </div>
-                </div>
+                @endforeach
+            </div>
 
-                <div class="mb-5">
-                    <h5 class="fw-bold mb-3 d-flex align-items-center">
-                        <span class="me-2" style="width: 4px; height: 20px; background: var(--primary-purple); display: inline-block; border-radius: 10px;"></span>
-                        Tentang Produk
-                    </h5>
-                    <p class="text-secondary lh-lg">{{ $product->description }}</p>
-                </div>
-
-                <div class="trust-badge-grid">
-                    <div class="trust-card">
-                        <i class="bi bi-truck"></i>
-                        <span>Pengiriman Cepat & Aman</span>
-                    </div>
-                    <div class="trust-card">
-                        <i class="bi bi-shield-check"></i>
-                        <span>Garansi Produk 100%</span>
-                    </div>
-                    <div class="trust-card">
-                        <i class="bi bi-arrow-repeat"></i>
-                        <span>7 Hari Pengembalian</span>
-                    </div>
-                    <div class="trust-card">
-                        <i class="bi bi-headset"></i>
-                        <span>Support CS 24/7</span>
-                    </div>
-                </div>
+            <!-- Pagination -->
+            <div class="d-flex justify-content-center mt-5">
+                {{ $products->links() }} <!-- pake Laravel pagination -->
             </div>
         </div>
     </div>
 </div>
-
-@push('scripts')
-<script>
-    function changeImage(el) {
-        const mainImg = document.getElementById('main-image');
-        mainImg.style.opacity = '0';
-        setTimeout(() => {
-            mainImg.src = el.src;
-            mainImg.style.opacity = '1';
-        }, 200);
-        document.querySelectorAll('.thumb-item').forEach(img => img.classList.remove('active'));
-        el.classList.add('active');
-    }
-    function incrementQty() {
-        const input = document.getElementById('quantity');
-        if (parseInt(input.value) < parseInt(input.max)) { input.value = parseInt(input.value) + 1; }
-    }
-    function decrementQty() {
-        const input = document.getElementById('quantity');
-        if (parseInt(input.value) > 1) { input.value = parseInt(input.value) - 1; }
-    }
-</script>
-@endpush
 @endsection

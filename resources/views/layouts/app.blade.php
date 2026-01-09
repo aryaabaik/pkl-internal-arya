@@ -28,19 +28,39 @@
 
     {{-- Vite (Tailwind) --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
- @vite(['resources/css/app.css', 'resources/js/app.js']) {{-- Stack untuk
-    script tambahan dari child view --}} 
-    {{-- Page Specific CSS --}}
-    @stack('scripts')
+
     @stack('styles')
+
+    <style>
+        /* Pengaturan Background */
+        .bg-school-hub {
+            /* Overlay dibuat lebih tipis (0.4) agar gambar asli lebih terlihat jelas */
+            background-image: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), 
+                              url('{{ asset("images/back.png") }}'); 
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        /* Memberi background putih sedikit transparan pada konten utama agar teks tetap tajam */
+        .content-overlay {
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(5px);
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 
-<body class="font-inter bg-gray-100 text-gray-800">
+<body class="font-inter bg-school-hub text-gray-800 min-h-screen">
 
     {{-- =============================
          NAVBAR
          ============================= --}}
-    @include('profile.partials.nav')
+    <div class="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
+        @include('profile.partials.nav')
+    </div>
 
     {{-- =============================
          FLASH MESSAGE
@@ -52,9 +72,8 @@
     {{-- =============================
          MAIN CONTENT
          ============================= --}}
-    <main class="min-h-screen">
+    <main class="min-h-screen py-6">
         @yield('content')
-        @yield('head')
     </main>
 
     {{-- =============================
@@ -65,7 +84,6 @@
     {{-- =============================
          SCRIPTS
          ============================= --}}
-         @stack('styles')
     @stack('scripts')
 
     {{-- AOS --}}
@@ -74,22 +92,19 @@
         AOS.init({ once: true });
     </script>
 
-    {{-- Wishlist Button --}}
+    {{-- Wishlist Button Script --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.wishlist-btn').forEach(button => {
                 button.addEventListener('click', function (e) {
                     e.preventDefault();
-
                     const productId = this.dataset.productId;
                     const icon = this.querySelector('i');
 
                     fetch(`/wishlist/${productId}`, {
                         method: 'POST',
                         headers: {
-                            'X-CSRF-TOKEN': document
-                                .querySelector('meta[name="csrf-token"]')
-                                .getAttribute('content'),
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                             'Accept': 'application/json'
                         }
                     })

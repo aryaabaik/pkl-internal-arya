@@ -177,7 +177,7 @@
         <p class="text-muted mb-4">
             Ayo lengkapi kebutuhan sekolahmu sekarang!
         </p>
-        <a href="{{ route('products.index') }}" class="btn btn-primary btn-lg rounded-pill px-4">
+        <a href="{{ route('catalog.index') }}" class="btn btn-primary btn-lg rounded-pill px-4">
             ✏️ Mulai Belanja
         </a>
     </div>
