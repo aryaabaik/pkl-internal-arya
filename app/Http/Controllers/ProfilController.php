@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use App\Models\User;
+use App\Models\Order;
+use App\Models\Wishlist;
 
 
 class ProfilController extends Controller
@@ -150,4 +153,12 @@ class ProfilController extends Controller
 
         return Redirect::to('/');
     }
+
+   public function show(User $user)
+{
+    $user->loadCount(['orders', 'wishlistProducts']);
+
+    return view('profile.show', compact('user'));
+}
+
 }

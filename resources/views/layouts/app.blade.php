@@ -36,7 +36,7 @@
         .bg-school-hub {
             /* Overlay dibuat lebih tipis (0.4) agar gambar asli lebih terlihat jelas */
             background-image: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), 
-                              url('{{ asset("images/back.png") }}'); 
+                              url('{{ asset("images/sop.png") }}'); 
             background-attachment: fixed;
             background-position: center;
             background-repeat: no-repeat;

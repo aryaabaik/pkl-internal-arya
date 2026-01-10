@@ -16,25 +16,7 @@
                 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
                 <style>
-                    .sidebar {
-                        min-height: 100vh;
-                        background: linear-gradient(180deg, #1e3a5f 0%, #0f172a 100%);
-                    }
-                    .sidebar .nav-link {
-                        color: rgba(255,255,255,0.7);
-                        padding: 12px 20px;
-                        border-radius: 8px;
-                        margin: 4px 12px;
-                        transition: all 0.2s;
-                    }
-                    .sidebar .nav-link:hover,
-                    .sidebar .nav-link.active {
-                        background: rgba(255,255,255,0.1);
-                        color: #fff;
-                    }
-                    .sidebar .nav-link i {
-                        width: 24px;
-                    }
+                  
                 </style>
                 @stack('styles')
             </head>

@@ -80,13 +80,24 @@ Route::middleware('auth')->group(function () {
 
    // Pesanan Saya
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+  Route::get('/profile/{user}', [ProfileController::class, 'show'])
+    ->name('profile.show');
+
 
     // Profil
     Route::get('/profile', [ProfilController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfilController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfilController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [ProfilController::class, 'edit'])->name('edit');
+        Route::patch('/', [ProfilController::class, 'update'])->name('update');
+        Route::delete('/', [ProfilController::class, 'destroy'])->name('destroy');
+        Route::delete('/avatar', [ProfilController::class, 'deleteAvatar'])->name('avatar.destroy');
+        Route::put('/password', [ProfilController::class, 'updatePassword'])->name('password.update');
+        Route::get('/{user}', [ProfilController::class, 'show'])->name('show');
+    });
 
 
 // ================================================
