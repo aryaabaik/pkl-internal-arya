@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 use Illuminate\View\View;
 
 
@@ -120,6 +121,13 @@ class ProfilController extends Controller
 
         return back()->with('status', 'password-updated');
     }
+
+       public function show(User $user)
+{
+    $user->loadCount(['orders', 'wishlistProducts']);
+
+    return view('profile.show', compact('user'));
+}
 
     /**
      * Menghapus akun user permanen.

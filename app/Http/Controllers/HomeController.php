@@ -43,12 +43,15 @@ class HomeController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
+    
     // ↑ METHOD INDEX:
     //   - public: bisa diakses dari luar class (oleh Router)
     //   - function index(): nama method, akan dipanggil oleh route
     //   - Tidak ada parameter karena homepage tidak butuh input user
     {
+
+    
         // ============================================================
         // STEP 1: AMBIL DATA KATEGORI UNTUK SECTION "KATEGORI POPULER"
         // ============================================================

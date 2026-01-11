@@ -2,81 +2,122 @@
 
 @section('content')
 <style>
-    /* =========================
-   SCHOOL STORE – ORDER CARD
-   BUG FREE VERSION
-========================= */
+:root {
+    --primary: #4f46e5;
+    --border: #e5e7eb;
+    --muted: #6b7280;
+    --bg-soft: #f9fafb;
+}
 
+/* PAGE */
+.order-page {
+    background: #f6f7fb;
+}
+
+/* CARD */
 .order-card {
-    position: relative;
-    border-radius: 18px;
-    background: #ffffff;
-    box-shadow: 0 12px 30px rgba(0,0,0,.08);
-    transition: all .3s ease;
-    overflow: hidden;
-}
-
-/* hover background TANPA overlay */
-.order-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 18px 40px rgba(0,0,0,.12);
-    background: linear-gradient(120deg, #e3f2fd, #ffffff);
-}
-
-.order-thumb {
-    width: 70px;
-    height: 70px;
-    object-fit: cover;
+    background: #fff;
     border-radius: 14px;
-    background: #f1f5f9;
-    border: 2px dashed #cfe2ff;
+    padding: 22px;
+    height: 100%;
+    border: 1px solid var(--border);
+    box-shadow: 0 6px 18px rgba(0,0,0,.06);
 }
 
-.order-badge {
-    font-size: 12px;
-    padding: 6px 12px;
+/* HEADER */
+.order-number {
+    font-weight: 800;
+    font-size: .95rem;
+    color: var(--primary);
+}
+
+/* THUMB */
+.order-thumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 10px;
+    object-fit: cover;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+}
+
+/* STATUS */
+.order-status {
+    font-size: 11px;
+    padding: 5px 12px;
     border-radius: 999px;
     font-weight: 600;
-    white-space: nowrap;
+    text-transform: uppercase;
 }
 
-.order-price {
-    color: #0d6efd;
-    font-size: 1.05rem;
-}
-
-.school-icon {
-    background: #e3f2fd;
-    color: #0d6efd;
-    padding: 8px 14px;
-    border-radius: 999px;
+/* ITEM */
+.order-item {
+    background: var(--bg-soft);
+    border-radius: 10px;
+    padding: 12px 14px;
     font-size: 14px;
+}
+
+/* PRICE */
+.order-price {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #111827;
+}
+
+/* BUTTON */
+.order-btn {
+    border-radius: 10px;
     font-weight: 600;
 }
 
-.order-actions .btn {
-    border-radius: 12px;
+.order-btn-primary {
+    background: var(--primary);
+    color: #fff;
+    border: none;
 }
 
-/* EMPTY STATE */
-.empty-illustration {
-    background: linear-gradient(135deg, #e3f2fd, #ffffff);
-    border-radius: 24px;
-    padding: 48px;
+.order-btn-primary:hover {
+    background: #4338ca;
 }
 
+.order-btn-outline {
+    border: 1px solid var(--border);
+    color: #374151;
+}
+
+.order-btn-outline:hover {
+    background: var(--bg-soft);
+}
+
+/* COUNTER */
+.order-counter {
+    background: #fff;
+    border: 1px solid var(--border);
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+/* EMPTY */
+.empty-state {
+    background: #fff;
+    border-radius: 18px;
+    padding: 70px 40px;
+    border: 1px solid var(--border);
+}
 </style>
-<div class="container py-5">
+
+<div class="order-page py-5">
+<div class="container">
 
     {{-- HEADER --}}
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-5">
         <div>
-            <h1 class="fw-bold mb-1">🎒 Pesanan Saya</h1>
-            <p class="text-muted mb-0">
-                Semua perlengkapan sekolah yang kamu pesan
-            </p>
+            <h1 class="fw-bold mb-1">Pesanan Saya</h1>
+            <p class="text-muted mb-0">Riwayat transaksi akun</p>
         </div>
-        <div class="school-icon mt-3 mt-md-0">
+        <div class="order-counter mt-3 mt-md-0">
             Total: {{ $orders->total() }}
         </div>
     </div>
@@ -86,79 +127,63 @@
 
         @foreach($orders as $order)
         @php
-            $firstItem = $order->items->first();
-            $thumb = optional($firstItem->product)->image_url ?? asset('images/order-placeholder.png');
+            $item = $order->items->first();
+            $thumb = optional($item->product)->image_url ?? asset('images/order-placeholder.png');
         @endphp
 
-        <div class="col-12 col-md-6 col-lg-4" data-aos="zoom-in-up">
-            <div class="order-card h-100">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="order-card">
 
-                <div class="p-4">
-                    {{-- HEADER CARD --}}
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="{{ $thumb }}" alt="Produk" class="order-thumb me-3">
+                <div class="d-flex align-items-center mb-4">
+                    <img src="{{ $thumb }}" class="order-thumb me-3">
 
-                        <div class="flex-grow-1">
-                            <div class="fw-bold text-primary">
-                                #{{ $order->order_number }}
-                            </div>
-                            <small class="text-muted">
-                                {{ $order->created_at->format('d M Y • H:i') }}
-                            </small>
+                    <div class="flex-grow-1">
+                        <div class="order-number">
+                            #{{ $order->order_number }}
                         </div>
-
-                        <span class="order-badge
-                            @if($order->status == 'pending') bg-warning text-dark
-                            @elseif($order->status == 'processing') bg-info text-dark
-                            @elseif($order->status == 'shipped') bg-primary text-white
-                            @elseif($order->status == 'delivered') bg-success text-white
-                            @elseif($order->status == 'cancelled') bg-danger text-white
-                            @else bg-secondary text-white
-                            @endif
-                        ">
-                            {{ ucfirst($order->status) }}
-                        </span>
+                        <small class="text-muted">
+                            {{ $order->created_at->format('d M Y • H:i') }}
+                        </small>
                     </div>
 
-                    {{-- ITEM --}}
-                    <div class="mb-3">
-                        <div class="text-muted small">
-                            📚
-                            @if($order->items->count())
-                                {{ $order->items->first()->product->name ?? $order->items->first()->product_name }}
-                                @if($order->items->count() > 1)
-                                    <span class="fw-semibold text-primary">
-                                        +{{ $order->items->count() - 1 }} item
-                                    </span>
-                                @endif
-                            @else
-                                -
-                            @endif
-                        </div>
-                    </div>
-
-                    {{-- TOTAL --}}
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-muted small">Total Pembayaran</span>
-                        <span class="order-price fw-bold">
-                            Rp {{ number_format($order->total_amount, 0, ',', '.') }}
-                        </span>
-                    </div>
-
-                    {{-- ACTION --}}
-                    <div class="d-flex justify-content-between order-actions">
-                        <a href="{{ route('orders.show', $order) }}" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-eye"></i> Detail
-                        </a>
-
-                        @if(Route::has('orders.invoice'))
-                        <a href="{{ route('orders.invoice', $order) }}" class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-receipt"></i> Invoice
-                        </a>
+                    <span class="order-status
+                        @if($order->status == 'pending') bg-warning text-dark
+                        @elseif($order->status == 'processing') bg-secondary text-white
+                        @elseif($order->status == 'shipped') bg-primary text-white
+                        @elseif($order->status == 'delivered') bg-success text-white
+                        @elseif($order->status == 'cancelled') bg-danger text-white
+                        @else bg-light text-dark
                         @endif
-                    </div>
-
+                    ">
+                        {{ ucfirst($order->status) }}
+                    </span>
                 </div>
+
+                <div class="order-item mb-4">
+                    {{ $item->product->name ?? $item->product_name ?? '-' }}
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <span class="text-muted">Total</span>
+                    <span class="order-price">
+                        Rp {{ number_format($order->total_amount, 0, ',', '.') }}
+                    </span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a href="{{ route('orders.show', $order) }}"
+                       class="btn order-btn order-btn-primary w-100">
+                        Detail
+                    </a>
+
+                    @if(Route::has('orders.invoice'))
+                    <a href="{{ route('orders.invoice', $order) }}"
+                       class="btn order-btn order-btn-outline w-100">
+                        Invoice
+                    </a>
+                    @endif
+                </div>
+
             </div>
         </div>
         @endforeach
@@ -166,22 +191,20 @@
     </div>
 
     <div class="mt-5 d-flex justify-content-center">
-        {{ $orders->links() }}
+        {{ $orders->links('pagination::bootstrap-5') }}
     </div>
 
     @else
-    {{-- EMPTY --}}
-    <div class="text-center empty-illustration">
-        <img src="/images/empty-orders.svg" class="mb-4" style="max-width:220px;">
-        <h4 class="fw-bold">Belum Ada Pesanan 📦</h4>
-        <p class="text-muted mb-4">
-            Ayo lengkapi kebutuhan sekolahmu sekarang!
-        </p>
-        <a href="{{ route('products.index') }}" class="btn btn-primary btn-lg rounded-pill px-4">
-            ✏️ Mulai Belanja
+    <div class="empty-state text-center">
+        <h3 class="fw-bold mb-2">Belum Ada Pesanan</h3>
+        <p class="text-muted mb-4">Mulai transaksi pertama kamu</p>
+        <a href="{{ route('products.index') }}"
+           class="btn order-btn order-btn-primary px-5 py-3">
+            Mulai Belanja
         </a>
     </div>
     @endif
 
+</div>
 </div>
 @endsection

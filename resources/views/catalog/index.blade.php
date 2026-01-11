@@ -1,238 +1,178 @@
 @extends('layouts.app')
+
 <style>
-    :root {
-        --primary: #6366f1; /* Indigo sebagai warna utama */
-        --primary-light: #818cf8;
-        --primary-dark: #4f46e5;
-        --bg: #f8fafc;
-        --card-bg: #ffffff;
-        --text: #1e293b;
-        --text-muted: #64748b;
-        --border: #e2e8f0;
-        --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+:root {
+    --primary: #6366f1;
+    --primary-soft: #eef2ff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-soft: rgba(15,23,42,.08);
+    --card-bg: #ffffff;
+    --transition: all .25s ease;
+}
 
-    /* Dark mode support (tambahkan class .dark ke body jika ingin dark mode) */
-    .dark {
-        --bg: #0f172a;
-        --card-bg: #1e293b;
-        --text: #f1f5f9;
-        --text-muted: #94a3b8;
-        --border: #334155;
-        --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    }
+/* ================= BASE ================= */
+.catalog-container {
+    max-width: 1400px;
+}
 
-    body {
-        background: var(--bg);
-        color: var(--text);
-        transition: var(--transition);
-    }
+.catalog-title {
+    font-weight: 800;
+    letter-spacing: -.02em;
+    color: var(--text-main);
+}
 
-    .container {
-        max-width: 1400px;
-    }
+/* ================= SIDEBAR ================= */
+.sidebar-filter {
+    background: var(--card-bg);
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(15,23,42,.05);
+}
 
-    /* Sidebar Filter - Glassmorphism Style Canggih */
-    .sidebar-filter {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 16px;
-        box-shadow: var(--shadow);
-        overflow: hidden;
-        transition: var(--transition);
-    }
+.sidebar-filter h6 {
+    font-weight: 700;
+    margin-bottom: 14px;
+}
 
-    .sidebar-filter .card-header {
-        background: linear-gradient(135deg, var(--primary), var(--primary-light));
-        color: white;
-        padding: 1.25rem;
-        font-size: 1.125rem;
-        font-weight: 700;
-    }
+.form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
 
-    .form-check-input:checked {
-        background-color: var(--primary);
-        border-color: var(--primary);
-    }
+.form-check-label {
+    cursor: pointer;
+    color: var(--text-main);
+}
 
-    .form-check-label {
-        cursor: pointer;
-        transition: var(--transition);
-    }
+.form-check-label small {
+    color: var(--text-muted);
+}
 
-    .form-check:hover .form-check-label {
-        color: var(--primary);
-    }
+.btn-primary {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+}
 
-    .btn-primary {
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        border: none;
-        border-radius: 8px;
-        padding: 0.75rem;
-        font-weight: 600;
-        transition: var(--transition);
-    }
+.btn-primary:hover {
+    opacity: .95;
+}
 
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
-    }
+.btn-outline-secondary {
+    border-radius: 10px;
+}
 
-    .btn-outline-secondary {
-        border-radius: 8px;
-        transition: var(--transition);
-    }
+/* ================= HEADER ================= */
+.catalog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
 
-    /* Product Grid & Cards - Advanced Hover Effects */
-    .product-card-wrapper {
-        perspective: 1000px; /* Untuk efek 3D subtle */
-    }
+.form-select {
+    border-radius: 10px;
+    border: 1px solid var(--border-soft);
+    font-weight: 500;
+}
 
-    .product-card {
-        background: var(--card-bg);
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: var(--shadow);
-        transition: var(--transition);
-        position: relative;
-    }
+/* ================= GRID ================= */
+.product-grid {
+    row-gap: 28px;
+}
 
-    .product-card:hover {
-        transform: translateY(-12px) scale(1.03);
-        box-shadow: 0 20px 40px rgba(99, 102, 241, 0.25);
-        z-index: 10;
-    }
+/* wrapper JANGAN ganggu click */
+.product-card-wrapper {
+    height: 100%;
+}
 
-    /* Glow on hover */
-    .product-card::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15), transparent 70%);
-        opacity: 0;
-        transition: opacity 0.4s;
-        pointer-events: none;
-        z-index: 1;
-    }
+/* ================= EMPTY ================= */
+.empty-state h5 {
+    font-weight: 700;
+}
 
-    .product-card:hover::before {
-        opacity: 1;
-    }
+/* ================= PAGINATION ================= */
+.pagination .page-link {
+    border-radius: 10px;
+    margin: 0 4px;
+    border: 1px solid var(--border-soft);
+    color: var(--text-main);
+}
 
-    /* Image zoom subtle */
-    .product-card img {
-        transition: transform 0.6s ease;
-    }
+.pagination .page-item.active .page-link {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
 
-    .product-card:hover img {
-        transform: scale(1.1);
-    }
-
-    /* Sorting & Header */
-    .catalog-header {
-        border-bottom: 1px solid var(--border);
-        padding-bottom: 1rem;
-    }
-
-    .form-select {
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        background: var(--card-bg);
-        transition: var(--transition);
-    }
-
-    .form-select:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
-    }
-
-    /* Empty State */
-    .empty-state img {
-        filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
-    }
-
-    /* Pagination - Modern Bootstrap 5 Style */
-    .pagination .page-link {
-        border-radius: 8px;
-        margin: 0 4px;
-        padding: 8px 16px;
-        color: var(--text);
-        border: 1px solid var(--border);
-        transition: var(--transition);
-    }
-
-    .pagination .page-item.active .page-link {
-        background: var(--primary);
-        border-color: var(--primary);
-        color: white;
-    }
-
-    .pagination .page-link:hover {
-        background: var(--primary-light);
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 992px) {
-        .sidebar-filter {
-            margin-bottom: 2rem;
-        }
-    }
+.pagination .page-link:hover {
+    background: var(--primary-soft);
+}
 </style>
+
 @section('content')
-<div class="container py-5">
+<div class="container catalog-container py-5">
     <div class="row">
-        {{-- SIDEBAR FILTER --}}
+
+        {{-- ================= SIDEBAR ================= --}}
         <div class="col-lg-3 mb-4">
-            <div class="card border-0 sidebar-filter">
-                <div class="card-header bg-white fw-bold">Filter Produk</div>
-                <div class="card-body">
-                    <form action="{{ route('catalog.index') }}" method="GET">
-                        @if(request('q')) <input type="hidden" name="q" value="{{ request('q') }}"> @endif
+            <div class="sidebar-filter">
+                <form action="{{ route('catalog.index') }}" method="GET">
+                    @if(request('q'))
+                        <input type="hidden" name="q" value="{{ request('q') }}">
+                    @endif
 
-                        {{-- Filter Kategori --}}
-                        <div class="mb-4">
-                            <h6 class="fw-bold mb-3">Kategori</h6>
-                            @foreach($categories as $cat)
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="category" value="{{ $cat->slug }}"
-                                        {{ request('category') == $cat->slug ? 'checked' : '' }}
-                                        onchange="this.form.submit()">
-                                    <label class="form-check-label">{{ $cat->name }} <small class="text-muted">({{ $cat->products_count }})</small></label>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        {{-- Filter Harga --}}
-                        <div class="mb-4">
-                            <h6 class="fw-bold mb-3">Rentang Harga</h6>
-                            <div class="d-flex gap-2">
-                                <input type="number" name="min_price" class="form-control" placeholder="Min" value="{{ request('min_price') }}">
-                                <input type="number" name="max_price" class="form-control" placeholder="Max" value="{{ request('max_price') }}">
+                    {{-- KATEGORI --}}
+                    <div class="mb-4">
+                        <h6>Kategori</h6>
+                        @foreach($categories as $cat)
+                            <div class="form-check mb-2">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="category"
+                                    value="{{ $cat->slug }}"
+                                    {{ request('category') == $cat->slug ? 'checked' : '' }}
+                                    onchange="this.form.submit()"
+                                >
+                                <label class="form-check-label">
+                                    {{ $cat->name }}
+                                    <small>({{ $cat->products_count }})</small>
+                                </label>
                             </div>
-                        </div>
+                        @endforeach
+                    </div>
 
-                        <button type="submit" class="btn btn-primary w-100">Terapkan Filter</button>
-                        <a href="{{ route('catalog.index') }}" class="btn btn-outline-secondary w-100 mt-2">Reset</a>
-                    </form>
-                </div>
+                    {{-- HARGA --}}
+                    <div class="mb-4">
+                        <h6>Rentang Harga</h6>
+                        <div class="d-flex gap-2">
+                            <input type="number" name="min_price" class="form-control" placeholder="Min" value="{{ request('min_price') }}">
+                            <input type="number" name="max_price" class="form-control" placeholder="Max" value="{{ request('max_price') }}">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary w-100">Terapkan</button>
+                    <a href="{{ route('catalog.index') }}" class="btn btn-outline-secondary w-100 mt-2">Reset</a>
+                </form>
             </div>
         </div>
 
-        {{-- PRODUCT GRID --}}
+        {{-- ================= PRODUCT ================= --}}
         <div class="col-lg-9">
-            <div class="d-flex justify-content-between align-items-center mb-4 catalog-header">
-                <h4 class="mb-0">Katalog Produk</h4>
-                {{-- Sorting --}}
-                <form method="GET" class="d-inline-block">
+            <div class="catalog-header">
+                <h4 class="catalog-title mb-0">Katalog Produk</h4>
+
+                {{-- SORT --}}
+                <form method="GET">
                     @foreach(request()->except('sort') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
-                    <select name="sort" class="form-select w-auto" onchange="this.form.submit()">
+
+                    <select name="sort" class="form-select" onchange="this.form.submit()">
                         <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Terbaru</option>
                         <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Harga Terendah</option>
                         <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Harga Tertinggi</option>
@@ -240,18 +180,18 @@
                 </form>
             </div>
 
-            <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="row row-cols-1 row-cols-md-3 product-grid">
                 @forelse($products as $product)
                     <div class="col">
                         <div class="product-card-wrapper">
-                            <x-product-card :product="$product" class="product-card h-100" />
+                            <x-product-card :product="$product" />
                         </div>
                     </div>
                 @empty
                     <div class="col-12 text-center py-5 empty-state">
-                        <img src="{{ asset('images/empty-state.svg') }}" width="150" class="mb-3 opacity-50">
+                        <img src="{{ asset('images/empty-state.svg') }}" width="140" class="mb-3 opacity-50">
                         <h5>Produk tidak ditemukan</h5>
-                        <p class="text-muted">Coba kurangi filter atau gunakan kata kunci lain.</p>
+                        <p class="text-muted">Coba ubah filter atau kata kunci.</p>
                     </div>
                 @endforelse
             </div>
@@ -260,6 +200,7 @@
                 {{ $products->links('pagination::bootstrap-5') }}
             </div>
         </div>
+
     </div>
 </div>
 @endsection

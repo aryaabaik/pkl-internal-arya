@@ -27,6 +27,9 @@ use Illuminate\Support\Facades\Auth;
 // ================================================
 // HALAMAN PUBLIK (Tanpa Login)
 // ================================================
+// Halaman Loading
+
+
 
 // Homepage
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -51,6 +54,8 @@ Route::controller(GoogleController::class)->group(function () {
     Route::get('/auth/google/callback', 'callback')
         ->name('auth.google.callback');
 });
+
+
 // Katalog Produk
 Route::get('/products', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/products/{slug}', [CatalogController::class, 'show'])->name('catalog.show');
@@ -59,6 +64,7 @@ Route::post('/wishlist/{product}', [WishlistController::class, 'toggle'])
     ->middleware('auth')
     ->name('wishlist.toggle');
 
+    
 // ================================================
 // HALAMAN YANG BUTUH LOGIN (Customer)
 // ================================================
@@ -87,7 +93,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfilController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfilController::class, 'destroy'])->name('profile.destroy');
 });
-
+Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [ProfilController::class, 'edit'])->name('edit');
+        Route::patch('/', [ProfilController::class, 'update'])->name('update');
+        Route::delete('/', [ProfilController::class, 'destroy'])->name('destroy');
+        Route::delete('/avatar', [ProfilController::class, 'deleteAvatar'])->name('avatar.destroy');
+        Route::put('/password', [ProfilController::class, 'updatePassword'])->name('password.update');
+        Route::get('/{user}', [ProfilController::class, 'show'])->name('show');
+    });
 
 // ================================================
 // HALAMAN ADMIN (Butuh Login + Role Admin)

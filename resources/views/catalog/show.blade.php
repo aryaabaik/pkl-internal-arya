@@ -7,331 +7,318 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <style>
-    :root {
-        /* Purple Gradient Theme */
-        --primary-purple: #7c3aed;
-        --secondary-purple: #f5f3ff;
-        --accent-purple: #c4b5fd;
-        --text-main: #1e1b4b;
-        --text-light: #6b7280;
-        /* Gradient Button & Elements */
-        --grad-purple: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-    }
+:root {
+    --primary: #7c3aed;
+    --primary-soft: #f5f3ff;
+    --primary-dark: #5b21b6;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-soft: rgba(15,23,42,.08);
+    --grad: linear-gradient(135deg, #8b5cf6, #6d28d9);
+}
 
-    body {
-        background-color: #f8fafc;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        color: var(--text-main);
-    }
+body {
+    background: #f8fafc;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: var(--text-main);
+}
 
-    /* Breadcrumb Styles */
-    .breadcrumb-wrapper { padding: 20px 0; }
-    .breadcrumb-item a { color: var(--text-light); text-decoration: none; font-weight: 500; transition: 0.3s; }
-    .breadcrumb-item a:hover { color: var(--primary-purple); }
+/* ================= BREADCRUMB ================= */
+.breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 500;
+}
+.breadcrumb a:hover {
+    color: var(--primary);
+}
 
-    /* Image Section */
-    .product-gallery-card {
-        background: white;
-        border-radius: 32px;
-        padding: 24px;
-        border: 1px solid #f1f5f9;
-        position: sticky;
-        top: 100px;
-        box-shadow: 0 10px 40px rgba(124, 58, 237, 0.05);
-    }
+/* ================= GALLERY ================= */
+.gallery-card {
+    background: #fff;
+    border-radius: 28px;
+    padding: 24px;
+    border: 1px solid var(--border-soft);
+    position: sticky;
+    top: 90px;
+}
 
-    .main-img-holder {
-        background: #fdfdff;
-        border-radius: 24px;
-        height: 500px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        margin-bottom: 20px;
-        position: relative;
-    }
+.main-image-box {
+    background: #fafafa;
+    border-radius: 24px;
+    height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
 
-    #main-image {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+#main-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform .5s ease;
+}
 
-    .main-img-holder:hover #main-image { transform: scale(1.08); }
+.main-image-box:hover #main-image {
+    transform: scale(1.07);
+}
 
-    .thumb-item {
-        width: 80px;
-        height: 80px;
-        border-radius: 16px;
-        cursor: pointer;
-        border: 2px solid transparent;
-        transition: 0.3s;
-        object-fit: cover;
-    }
+.thumb-item {
+    width: 76px;
+    height: 76px;
+    border-radius: 14px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: .25s;
+}
 
-    .thumb-item.active { border-color: var(--primary-purple); box-shadow: 0 0 0 4px var(--secondary-purple); }
+.thumb-item.active {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-soft);
+}
 
-    /* Info Section */
-    .product-details { padding-left: 20px; }
+/* ================= INFO ================= */
+.product-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-weight: 700;
+    font-size: .8rem;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+}
 
-    .brand-tag {
-        color: var(--primary-purple);
-        background: var(--secondary-purple);
-        padding: 6px 16px;
-        border-radius: 100px;
-        font-weight: 700;
-        font-size: 0.85rem;
-        display: inline-block;
-        margin-bottom: 12px;
-    }
+.product-title {
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: -.02em;
+}
 
-    .product-title {
-        font-size: 2.8rem;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        line-height: 1.2;
-    }
+.price-box {
+    background: #fff;
+    border-radius: 24px;
+    padding: 28px;
+    border: 1px solid var(--border-soft);
+    margin: 28px 0;
+}
 
-    .price-wrapper {
-        background: white;
-        padding: 30px;
-        border-radius: 24px;
-        border: 1px solid #f1f5f9;
-        box-shadow: 0 10px 30px rgba(124, 58, 237, 0.06);
-        margin: 24px 0;
-    }
+.current-price {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--primary);
+}
 
-    .current-price { font-size: 2.5rem; font-weight: 800; color: var(--primary-purple); }
-    .old-price { text-decoration: line-through; color: var(--text-light); font-size: 1.1rem; }
+.old-price {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
 
-    /* Controls */
-    .qty-control {
-        background: var(--secondary-purple);
-        border-radius: 100px;
-        padding: 6px;
-        display: inline-flex;
-        align-items: center;
-    }
+/* ================= ACTION ================= */
+.qty-control {
+    background: var(--primary-soft);
+    border-radius: 999px;
+    padding: 6px;
+    display: inline-flex;
+    align-items: center;
+}
 
-    .qty-btn {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        border: none;
-        background: white;
-        color: var(--primary-purple);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        transition: 0.2s;
-    }
+.qty-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #fff;
+    border: none;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-    .qty-input {
-        width: 60px;
-        border: none;
-        background: transparent;
-        text-align: center;
-        font-weight: 700;
-        font-size: 1.2rem;
-        color: var(--primary-purple);
-    }
+.qty-input {
+    width: 60px;
+    border: none;
+    background: transparent;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--primary);
+}
 
-    /* Buttons */
-    .btn-cart-premium {
-        background: var(--grad-purple);
-        color: white;
-        border: none;
-        padding: 18px 40px;
-        border-radius: 100px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        transition: 0.3s;
-        box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
-    }
+.btn-cart {
+    background: var(--grad);
+    color: #fff;
+    border-radius: 999px;
+    padding: 18px 36px;
+    font-weight: 700;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 25px rgba(124,58,237,.35);
+}
 
-    .btn-cart-premium:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 35px rgba(124, 58, 237, 0.4);
-        color: white;
-    }
+.btn-cart:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(124,58,237,.45);
+}
 
-    /* New Purple Wishlist Style */
-    .btn-wishlist-premium {
-        border-radius: 100px;
-        padding: 12px 24px;
-        font-weight: 700;
-        transition: 0.3s;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        border: 2px solid var(--primary-purple);
-    }
+.btn-wishlist {
+    border-radius: 999px;
+    border: 2px solid var(--primary);
+    padding: 12px 24px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
 
-    .btn-wishlist-active {
-        background: var(--secondary-purple);
-        color: var(--primary-purple);
-        border-color: var(--primary-purple);
-    }
+.btn-wishlist-active {
+    background: var(--primary-soft);
+    color: var(--primary);
+}
 
-    .btn-wishlist-inactive {
-        background: transparent;
-        color: var(--primary-purple);
-        border-color: var(--primary-purple);
-    }
+.btn-wishlist-inactive {
+    background: transparent;
+    color: var(--primary);
+}
 
-    .btn-wishlist-premium:hover {
-        background: var(--primary-purple);
-        color: white !important;
-    }
+.btn-wishlist:hover {
+    background: var(--primary);
+    color: #fff !important;
+}
 
-    /* Trust Badges */
-    .trust-badge-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-        margin-top: 30px;
-    }
+/* ================= TRUST ================= */
+.trust-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+}
 
-    .trust-card {
-        background: #fff;
-        padding: 16px;
-        border-radius: 16px;
-        border: 1px solid #f1f5f9;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
+.trust-card {
+    background: #fff;
+    border: 1px solid var(--border-soft);
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
 
-    .trust-card i { font-size: 1.5rem; color: var(--primary-purple); }
-    .trust-card span { font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
+.trust-card i {
+    font-size: 1.4rem;
+    color: var(--primary);
+}
+
+.trust-card span {
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
 </style>
 @endpush
 
 @section('content')
 <div class="container pb-5">
-    <div class="breadcrumb-wrapper">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('catalog.index') }}">Stationery</a></li>
-                <li class="breadcrumb-item active">{{ $product->category->name }}</li>
-            </ol>
-        </nav>
-    </div>
+
+    {{-- BREADCRUMB --}}
+    <nav class="py-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('catalog.index') }}">Catalog</a></li>
+            <li class="breadcrumb-item active">{{ $product->name }}</li>
+        </ol>
+    </nav>
 
     <div class="row g-5">
+        {{-- GALLERY --}}
         <div class="col-lg-6">
-            <div class="product-gallery-card">
-                <div class="main-img-holder">
+            <div class="gallery-card">
+                <div class="main-image-box position-relative">
                     @if($product->has_discount)
-                        <div class="position-absolute top-0 start-0 m-4" style="z-index: 10;">
-                            {{-- Warna badge promo disamakan ke ungu aksen --}}
-                            <span class="badge rounded-pill px-3 py-2 fw-bold shadow-sm" style="background: var(--primary-purple); color: white;">PROMO {{ $product->discount_percentage }}%</span>
-                        </div>
+                        <span class="position-absolute top-0 start-0 m-4 badge rounded-pill fw-bold"
+                              style="background: var(--primary); color:#fff;">
+                            PROMO {{ $product->discount_percentage }}%
+                        </span>
                     @endif
                     <img src="{{ $product->image_url }}" id="main-image" alt="{{ $product->name }}">
                 </div>
-                
-                <div class="d-flex gap-3 justify-content-center overflow-auto py-2">
+
+                <div class="d-flex gap-3 justify-content-center mt-3 overflow-auto">
                     <img src="{{ $product->image_url }}" class="thumb-item active" onclick="changeImage(this)">
                     @foreach($product->images as $image)
-                        <img src="{{ asset('storage/' . $image->image_path) }}" class="thumb-item" onclick="changeImage(this)">
+                        <img src="{{ asset('storage/'.$image->image_path) }}" class="thumb-item" onclick="changeImage(this)">
                     @endforeach
                 </div>
             </div>
         </div>
 
+        {{-- INFO --}}
         <div class="col-lg-6">
-            <div class="product-details">
-                <span class="brand-tag"><i class="bi bi-patch-check-fill me-1"></i> Original Product</span>
-                <h1 class="product-title mb-3">{{ $product->name }}</h1>
-                
-                <div class="d-flex align-items-center gap-3 mb-4">
-                    <div class="d-flex" style="color: #ffc107;">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
-                    </div>
-                    <span class="text-muted small fw-bold">(4.8/5.0 - 120 Terjual)</span>
-                </div>
+            <span class="product-tag"><i class="bi bi-patch-check-fill"></i> Original Product</span>
+            <h1 class="product-title mb-3">{{ $product->name }}</h1>
 
-                <div class="price-wrapper">
-                    <div class="d-flex flex-column">
-                        @if($product->has_discount)
-                            <span class="old-price">{{ $product->formatted_original_price }}</span>
-                        @endif
-                        <span class="current-price">{{ $product->formatted_price }}</span>
-                    </div>
-                    
-                    <hr class="my-4 opacity-50">
-                    
-                    <div class="d-flex flex-column gap-3">
-                        {{-- Form Add To Cart --}}
-                        <form action="{{ route('cart.add') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <div class="d-flex flex-wrap align-items-center gap-3 mb-2">
-                                <div class="qty-control">
-                                    <button type="button" class="qty-btn" onclick="decrementQty()"><i class="bi bi-dash-lg"></i></button>
-                                    <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ $product->stock }}" class="qty-input">
-                                    <button type="button" class="qty-btn" onclick="incrementQty()"><i class="bi bi-plus-lg"></i></button>
-                                </div>
-                                <button type="submit" class="btn btn-cart-premium flex-grow-1" {{ $product->stock == 0 ? 'disabled' : '' }}>
-                                    <i class="bi bi-bag-plus-fill fs-5"></i>
-                                    <span>{{ $product->stock == 0 ? 'Stok Habis' : 'Masukkan Keranjang' }}</span>
-                                </button>
-                            </div>
-                        </form>
-
-                        {{-- Form Wishlist (Purple Theme) --}}
-                        @auth
-                        <form action="{{ route('wishlist.toggle', $product->id) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-wishlist-premium {{ auth()->user()->hasInWishlist($product) ? 'btn-wishlist-active' : 'btn-wishlist-inactive' }}">
-                                <i class="bi {{ auth()->user()->hasInWishlist($product) ? 'bi-heart-fill' : 'bi-heart' }}"></i>
-                                {{ auth()->user()->hasInWishlist($product) ? 'Hapus dari Wishlist' : 'Simpan ke Wishlist' }}
-                            </button>
-                        </form>
-                        @else
-                        <a href="{{ route('login') }}" class="btn btn-wishlist-premium btn-wishlist-inactive">
-                            <i class="bi bi-heart"></i> Simpan ke Wishlist
-                        </a>
-                        @endauth
-                    </div>
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div style="color:#facc15;">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-half"></i>
                 </div>
+                <span class="text-muted fw-semibold small">(Rating Produk • 4.8 / 5 )</span>
+            </div>
 
-                <div class="mb-5">
-                    <h5 class="fw-bold mb-3 d-flex align-items-center">
-                        <span class="me-2" style="width: 4px; height: 20px; background: var(--primary-purple); display: inline-block; border-radius: 10px;"></span>
-                        Tentang Produk
-                    </h5>
-                    <p class="text-secondary lh-lg">{{ $product->description }}</p>
-                </div>
+            <div class="price-box">
+                @if($product->has_discount)
+                    <div class="old-price">{{ $product->formatted_original_price }}</div>
+                @endif
+                <div class="current-price">{{ $product->formatted_price }}</div>
 
-                <div class="trust-badge-grid">
-                    <div class="trust-card">
-                        <i class="bi bi-truck"></i>
-                        <span>Pengiriman Cepat & Aman</span>
+                <hr class="my-4">
+
+                <form action="{{ route('cart.add') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="qty-control">
+                            <button type="button" class="qty-btn" onclick="decrementQty()"><i class="bi bi-dash-lg"></i></button>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ $product->stock }}" class="qty-input">
+                            <button type="button" class="qty-btn" onclick="incrementQty()"><i class="bi bi-plus-lg"></i></button>
+                        </div>
+
+                        <button type="submit" class="btn-cart flex-grow-1" {{ $product->stock == 0 ? 'disabled' : '' }}>
+                            <i class="bi bi-bag-plus-fill"></i>
+                            {{ $product->stock == 0 ? 'Stok Habis' : 'Masukkan Keranjang' }}
+                        </button>
                     </div>
-                    <div class="trust-card">
-                        <i class="bi bi-shield-check"></i>
-                        <span>Garansi Produk 100%</span>
-                    </div>
-                    <div class="trust-card">
-                        <i class="bi bi-arrow-repeat"></i>
-                        <span>7 Hari Pengembalian</span>
-                    </div>
-                    <div class="trust-card">
-                        <i class="bi bi-headset"></i>
-                        <span>Support CS 24/7</span>
-                    </div>
-                </div>
+                </form>
+
+                @auth
+                <form action="{{ route('wishlist.toggle', $product->id) }}" method="POST" class="mt-3">
+                    @csrf
+                    <button type="submit"
+                        class="btn-wishlist {{ auth()->user()->hasInWishlist($product) ? 'btn-wishlist-active' : 'btn-wishlist-inactive' }}">
+                        <i class="bi {{ auth()->user()->hasInWishlist($product) ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                        {{ auth()->user()->hasInWishlist($product) ? 'Hapus dari Wishlist' : 'Simpan ke Wishlist' }}
+                    </button>
+                </form>
+                @endauth
+            </div>
+
+            <h5 class="fw-bold mb-2">Tentang Produk</h5>
+            <p class="text-muted lh-lg">{{ $product->description }}</p>
+
+            <div class="trust-grid">
+                <div class="trust-card"><i class="bi bi-truck"></i><span>Pengiriman Cepat</span></div>
+                <div class="trust-card"><i class="bi bi-shield-check"></i><span>Garansi Resmi</span></div>
+                <div class="trust-card"><i class="bi bi-arrow-repeat"></i><span>7 Hari Retur</span></div>
+                <div class="trust-card"><i class="bi bi-headset"></i><span>CS 24/7</span></div>
             </div>
         </div>
     </div>
@@ -339,24 +326,21 @@
 
 @push('scripts')
 <script>
-    function changeImage(el) {
-        const mainImg = document.getElementById('main-image');
-        mainImg.style.opacity = '0';
-        setTimeout(() => {
-            mainImg.src = el.src;
-            mainImg.style.opacity = '1';
-        }, 200);
-        document.querySelectorAll('.thumb-item').forEach(img => img.classList.remove('active'));
-        el.classList.add('active');
-    }
-    function incrementQty() {
-        const input = document.getElementById('quantity');
-        if (parseInt(input.value) < parseInt(input.max)) { input.value = parseInt(input.value) + 1; }
-    }
-    function decrementQty() {
-        const input = document.getElementById('quantity');
-        if (parseInt(input.value) > 1) { input.value = parseInt(input.value) - 1; }
-    }
+function changeImage(el){
+    const main = document.getElementById('main-image');
+    main.style.opacity = 0;
+    setTimeout(()=>{ main.src = el.src; main.style.opacity = 1; },200);
+    document.querySelectorAll('.thumb-item').forEach(i=>i.classList.remove('active'));
+    el.classList.add('active');
+}
+function incrementQty(){
+    const i = document.getElementById('quantity');
+    if(+i.value < +i.max) i.value++;
+}
+function decrementQty(){
+    const i = document.getElementById('quantity');
+    if(+i.value > 1) i.value--;
+}
 </script>
 @endpush
 @endsection
